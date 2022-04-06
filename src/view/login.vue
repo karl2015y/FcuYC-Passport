@@ -5,6 +5,13 @@ import { useUserStore } from "../store/user";
 import { watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
+import "../tools/firebase";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+
 export default {
   setup() {
     const router = useRouter();
@@ -14,6 +21,32 @@ export default {
     /**
      * 到資料庫確定一下該用戶是否登記過，如果沒有就加上去
      */
+    const getDBDataHandler = (email, password, callback = null) => {
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          if (callback) callback();
+        })
+        .catch((error) => {
+          if (error.code == "auth/user-disabled") {
+            alert(`該帳號(${email})已被停用，請聯絡中逢青管理員`);
+          }
+          else if (error.code == "auth/user-not-found") {
+            createUserWithEmailAndPassword(auth, email, password).then(
+              (userCredential) => {
+                const user = userCredential.user;
+                if (callback) callback();
+              }
+            );
+          }else{
+             alert(
+            `好像出錯了，請將此頁截圖，並聯絡中逢青管理員。\nError Code：${error.code}`
+          );
+          }
+         
+        });
+    };
 
     /**
      * 將query 轉obj
@@ -50,7 +83,9 @@ export default {
       () => userStatus.isLogin,
       (isLogin) => {
         if (isLogin) {
-          back2FromUrl();
+          // back2FromUrl();
+          console.log();
+          getDBDataHandler(userStatus.user.email, "Aa3345678", back2FromUrl);
         }
       }
     );
