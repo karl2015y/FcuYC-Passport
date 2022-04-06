@@ -15,7 +15,7 @@ export default {
       () => userStatus.isLogin,
       (isLogin) => {
         if (isLogin) {
-          router.push({ path: decodeURIComponent(route.query.from) });
+            window.location.href = decodeURIComponent(route.query.from)
         }
       }
     );
