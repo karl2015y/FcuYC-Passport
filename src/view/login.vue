@@ -9,13 +9,14 @@ export default {
   setup() {
     const router = useRouter();
     const route = useRoute();
-
     const userStatus = useUserStore();
     const back2FromUrl = () => {
-      const path = decodeURIComponent(route.query.from);
+      const path = route.query.from
+        ? decodeURIComponent(route.query.from)
+        : "passport";
       let query = {};
       if (path.indexOf("?") > -1) {
-        query = path.split("?")[1]
+        query = path.split("?")[1];
         query = JSON.parse(
           '{"' +
             query
@@ -25,8 +26,7 @@ export default {
             '"}'
         );
       }
-
-      console.log("已經登入 即將返回", path, query);
+      console.log("返回", path, query);
       router.push({ path, query });
     };
     watch(
