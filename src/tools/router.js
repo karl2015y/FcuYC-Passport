@@ -29,7 +29,11 @@ export const router = createRouter({
 router.beforeEach((to, from, next) => {
     const UserStore = useUserStore();
     // 如果沒有登入就轉登入頁
-    if (to.name != "Login" && !UserStore.isLogin) next({ name: 'Login', query: { from: encodeURIComponent(window.location.href)} })
+    if (to.name != "Login" && !UserStore.isLogin) {
+        const fromPath = window.location.href.replace(window.location.origin, "");
+        console.log("先去登入頁面確定是否已經登入",fromPath);
+        next({ name: 'Login', query: { from: encodeURIComponent(fromPath) } })
+    }
     if (to.meta.title) {
         document.title = route_name + to.meta.title
     }

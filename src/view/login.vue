@@ -11,11 +11,29 @@ export default {
     const route = useRoute();
 
     const userStatus = useUserStore();
+    const back2FromUrl = () => {
+      const path = decodeURIComponent(route.query.from);
+      let query = {};
+      if (path.indexOf("?") > -1) {
+        query = path.substring(2);
+        query = JSON.parse(
+          '{"' +
+            query
+              .replace(/"/g, '\\"')
+              .replace(/&/g, '","')
+              .replace(/=/g, '":"') +
+            '"}'
+        );
+      }
+
+      console.log("已經登入 即將返回", path, query);
+      router.push({ path, query });
+    };
     watch(
       () => userStatus.isLogin,
       (isLogin) => {
         if (isLogin) {
-            window.location.href = decodeURIComponent(route.query.from)
+          back2FromUrl();
         }
       }
     );

@@ -10,6 +10,7 @@ liff
         const userStatus = useUserStore();
         const is_dev = import.meta.env.DEV;
         if (is_dev) {
+            console.log("開發模式給假資料");
             userStatus.isLogin = true;
             userStatus.user = {
                 name: "[test]林裕凱 Karl",
@@ -19,11 +20,13 @@ liff
                 email: "[test]karl2015y@gmail.com",
             };
         } else {
-            userStatus.isLogin = liff.isLoggedIn({ redirectUri: window.location.href });
+            userStatus.isLogin = liff.isLoggedIn();
+
             if (!userStatus.isLogin) {
-                liff.login();
+                console.log("沒登入跳去LINE");
+                liff.login({ redirectUri: window.location.href });
             } else {
-                alert("登入成功");
+                console.log("已經登入了");
                 const { name, picture, sub, email } = liff.getDecodedIDToken();
                 userStatus.user = {
                     name: name,
