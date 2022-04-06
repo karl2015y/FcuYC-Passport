@@ -14,7 +14,17 @@ export default {
     /**
      * 到資料庫確定一下該用戶是否登記過，如果沒有就加上去
      */
-    
+
+    /**
+     * 將query 轉obj
+     */
+    const paramsToObject = (entries) => {
+      const result = {};
+      for (const [key, value] of entries) {
+        result[key] = value;
+      }
+      return result;
+    };
 
     /**
      * 返回登入前的畫面
@@ -22,18 +32,12 @@ export default {
     const back2FromUrl = () => {
       const path = route.query.from
         ? decodeURIComponent(route.query.from)
-        : "passport";
+        : "/passport";
       let query = {};
       if (path.indexOf("?") > -1) {
         query = path.split("?")[1];
-        query = JSON.parse(
-          '{"' +
-            query
-              .replace(/"/g, '\\"')
-              .replace(/&/g, '","')
-              .replace(/=/g, '":"') +
-            '"}'
-        );
+        const entries = new URLSearchParams(query).entries();
+        query = paramsToObject(entries);
       }
       console.log("返回", path, query);
       router.push({ path, query });
