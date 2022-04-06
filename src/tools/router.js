@@ -6,17 +6,18 @@ const route_name = "中逢青-"
 
 const routes = [
     {
+        name: "Login", path: '/', component: () => import('../view/login.vue'),
+        meta: {
+            title: '會員登入'
+        }
+    },
+    {
         name: "Passport", path: '/passport', component: () => import('../view/passport.vue'),
         meta: {
             title: '會員護照'
         }
     },
-    {
-        name: "Login", path: '/login', component: () => import('../view/login.vue'),
-        meta: {
-            title: '會員登入'
-        }
-    },
+
 ]
 
 
@@ -31,8 +32,8 @@ router.beforeEach((to, from, next) => {
     // 如果沒有登入就轉登入頁
     if (to.name != "Login" && !UserStore.isLogin) {
         const fromPath = window.location.href.replace(window.location.origin, "");
-        console.log("先去登入頁面確定是否已經登入",fromPath);
-        next({ name: 'Login', query: { from: encodeURIComponent(fromPath) } })
+        console.log("先去登入頁面確定是否已經登入", fromPath);
+        next({ name: 'Login', query: { to: encodeURIComponent(fromPath) } })
     }
     if (to.meta.title) {
         document.title = route_name + to.meta.title

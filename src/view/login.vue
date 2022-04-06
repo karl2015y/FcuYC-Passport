@@ -30,8 +30,8 @@ export default {
      * 返回登入前的畫面
      */
     const back2FromUrl = () => {
-      const path = route.query.from
-        ? decodeURIComponent(route.query.from)
+      const path = route.query.to
+        ? decodeURIComponent(route.query.to)
         : "/passport";
       let query = {};
       if (path.indexOf("?") > -1) {
