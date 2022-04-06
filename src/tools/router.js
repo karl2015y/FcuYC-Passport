@@ -17,6 +17,12 @@ const routes = [
             title: '會員護照'
         }
     },
+    {
+        name: "findPassport", path: '/passport/:email', component: () => import('../view/getPassport.vue'),
+        meta: {
+            title: '會員護照'
+        }
+    },
 
 ]
 
