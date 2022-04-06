@@ -10,6 +10,15 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const userStatus = useUserStore();
+
+    /**
+     * 到資料庫確定一下該用戶是否登記過，如果沒有就加上去
+     */
+    
+
+    /**
+     * 返回登入前的畫面
+     */
     const back2FromUrl = () => {
       const path = route.query.from
         ? decodeURIComponent(route.query.from)
@@ -29,6 +38,10 @@ export default {
       console.log("返回", path, query);
       router.push({ path, query });
     };
+
+    /**
+     * 監聽liff是否觸發登入
+     */
     watch(
       () => userStatus.isLogin,
       (isLogin) => {
