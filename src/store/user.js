@@ -6,7 +6,7 @@ export  const userStore = defineStore('storeId', {
     return {
       // all these properties will have their type inferred automatically
       isLogin: false,
-      name: '',
+      user: null,
       isAdmin: false,
     }
   },

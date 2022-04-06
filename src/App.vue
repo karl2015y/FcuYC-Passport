@@ -5,6 +5,9 @@
   <HelloWorld msg="Hello Vue 3 + Vite" />
   {{ text }}
   {{ userStatus.isLogin }}
+  <p>
+    {{ userStatus.user }}
+  </p>
 </template>
 
 <script setup>

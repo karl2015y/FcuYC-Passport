@@ -11,5 +11,6 @@ liff.init({
         liff.login()
     }else{
         alert("登入成功")
+        userStatus.user=liff.getDecodedIDToken();
     }
 });
