@@ -2,12 +2,14 @@ import { createApp } from 'vue'
 import App from './App.vue'
 
 
-import "./tools/liff"
+const app = createApp(App)
 
 
 import { createPinia } from 'pinia'
-
-
-const app = createApp(App)
 app.use(createPinia())
+
+import { router } from './tools/router'
+app.use(router)
+
+
 app.mount('#app')
