@@ -6,7 +6,7 @@ const route_name = "中逢青-"
 
 const routes = [
     {
-        name: "Passport", path: '/', component: () => import('../view/passport.vue'),
+        name: "Passport", path: '/passport', component: () => import('../view/passport.vue'),
         meta: {
             title: '會員護照'
         }

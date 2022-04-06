@@ -15,7 +15,7 @@ export default {
       const path = decodeURIComponent(route.query.from);
       let query = {};
       if (path.indexOf("?") > -1) {
-        query = path.substring(2);
+        query = path.split("?")[1]
         query = JSON.parse(
           '{"' +
             query
