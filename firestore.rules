@@ -13,11 +13,14 @@ service cloud.firestore {
          get(/databases/$(database)/documents/user/$(user_id)).data.email==request.auth.token.email;
     }
     
+    
 		match /{document=**} {
       allow read, write: if isAdmin();
     }
 		match /user/{user_id=**} {
-      allow read, write : if isMine(user_id);
+      allow read : if get(/databases/$(database)/documents/user/$(user_id))==null || isMine(user_id) ;
+      allow create: if true;
+      allow update: if isMine(user_id);
     }
 		match /template/{document=**} {
       allow read : if true;

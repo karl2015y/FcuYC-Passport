@@ -1,6 +1,10 @@
 <template>
   自己跟管理員才能看和編輯的護照
   {{ UserData }}
+  <br>
+  {{userStatus.roles}}
+  <img v-if="UserData" :src="UserData.picture" alt="">
+
   <h1>編輯區</h1>
   <div v-if="UserData">
     <div
