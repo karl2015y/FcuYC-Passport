@@ -68,8 +68,12 @@
         <div v-else class="w-72 mb-2">
           <input
             v-model="UserData[key]"
-            :type="value[0]"
             :placeholder="value[2]"
+            @focus="
+              (e) => {
+                e.target.type = value[0];
+              }
+            "
             class="
               shadow
               appearance-none
