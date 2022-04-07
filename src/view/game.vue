@@ -10,7 +10,7 @@
         <h3>剩餘數量：{{ current_gift.count }}</h3>
       </div>
       <br />
-      <div>
+      <div v-if="playing">
         <h2>[中獎人]</h2>
         <h1>{{ get_gift_person.graduation }}</h1>
         <h1>{{ get_gift_person.name }}</h1>
@@ -31,12 +31,21 @@
           alt=""
         />
       </div>
-      <button v-if="!playing" @click="randomGiveGift(30)">抽獎</button>
+      <button v-else class=" mx-auto
+        bg-blue-500
+        hover:bg-blue-700
+        text-white
+        font-bold
+        py-2
+        px-4
+        border border-blue-700
+        rounded
+        w-96" @click="randomGiveGift(30)">抽獎</button>
     </div>
     <div v-else>抽獎結束</div>
   </div>
 
-    <h1>已中獎</h1>
+  <h1>已中獎</h1>
   <div class="flex gap-3 justify-around">
     <div v-for="item in gameData.result" :key="item">
       <div>
