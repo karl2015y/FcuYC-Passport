@@ -1,10 +1,13 @@
 <template>
   自己跟管理員才能看和編輯的護照
   {{ UserData }}
-  <br>
-  {{userStatus.roles}}
-  <img v-if="UserData" :src="UserData.picture" alt="">
-
+  <br />
+  {{ userStatus.roles }}
+  <img v-if="UserData" :src="UserData.picture" alt="" />
+  <div v-show="generate_link_show">
+    <canvas style="display: none" id="canvas" />
+    <img src="" alt="" id="image" />
+  </div>
   <h1>編輯區</h1>
   <div v-if="UserData">
     <div
@@ -40,7 +43,7 @@ import { useUserStore } from "../store/user.js";
 
 import { db } from "../tools/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { ref } from "vue";
+import { ref, onMounted, computed,  onBeforeMount } from "vue";
 
 export default {
   setup() {
@@ -81,7 +84,8 @@ export default {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         UserData.value = docSnap.data();
-         console.log("取得資料成功", UserData.value);
+        console.log("取得資料成功", UserData.value);
+        generateLinkHandler();
         if (UserData.value.ver != template.ver) {
           console.log("模板更新，建立對應欄位");
           UserData.value = await updateUserDataFromTemplate(
@@ -133,12 +137,51 @@ export default {
       getUserData();
     };
 
+    /**
+     * 生成QRcode
+     */
+
+    const generate_link_show = ref(false);
+    const generate_link = computed(() => {
+      return `${window.location.origin}/passport/${encodeURIComponent(
+        userStatus.user.email
+      ).replace(/\./g, "DOT")}`;
+    });
+    const generateLinkHandler = () => {
+      generate_link_show.value = true;
+      const log = new QrCodeWithLogo({
+        canvas: document.getElementById("canvas"),
+        content: generate_link.value,
+        width: 380,
+        // download: true,
+        image: document.getElementById("image"),
+        logo: {
+          src: "/logo.jpg",
+        },
+      })
+        .toImage()
+        .then((item) => {
+          console.log(item);
+        });
+    };
+
+
+
+    onBeforeMount(() => {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "/qrcode-with-logo.min.js";
+      document.head.appendChild(script);
+    });
+
+
     getUserData();
     return {
       userStatus,
       UserData,
       UserDataTemplate,
       updateUserDataHandler,
+      generate_link_show
     };
   },
 };
