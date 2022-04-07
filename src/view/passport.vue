@@ -1,99 +1,16 @@
 <template>
   自己跟管理員才能看和編輯的護照
-  {{ UserData }}
+  <!-- {{ UserData }}
   <br />
-  {{ userStatus.roles }}
+  {{ userStatus.roles }} -->
   <img v-if="UserData" :src="UserData.picture" alt="" />
-  <div id="qrcode" />
+  <div id="qrcode" class="flex justify-center" />
 
-  <div v-if="UserData" class="p-5">
-    <h1 class="font-bold text-2xl">編輯區</h1>
-    <div
-      v-for="(value, key) in UserDataTemplate"
-      :key="key"
-      class="flex items-center gap-3"
-    >
-      <template v-if="value.length >= 3">
-        <h2 class="w-24 px-2 mb-2" style="text-align-last: justify">
-          {{ value[1] }}
-        </h2>
-        <div
-          v-if="value[0] == `select` && value.length >= 4"
-          class="inline-block relative w-72 mb-2"
-        >
-          <select
-            :name="key"
-            v-model="UserData[key]"
-            class="
-              shadow
-              appearance-none
-              border
-              rounded
-              w-full
-              py-2
-              px-3
-              text-gray-700
-              leading-tight
-              focus:outline-none focus:shadow-outline
-            "
-          >
-            <option value="" disabled>{{ value[2] }}</option>
-            <option v-for="item in value[3]" :key="item" :value="item">
-              {{ item }}
-            </option>
-          </select>
-          <div
-            class="
-              pointer-events-none
-              absolute
-              inset-y-0
-              right-0
-              flex
-              items-center
-              px-2
-              text-gray-700
-            "
-          >
-            <svg
-              class="fill-current h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <path
-                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-              />
-            </svg>
-          </div>
-        </div>
-        <div v-else class="w-72 mb-2">
-          <input
-            v-model="UserData[key]"
-            :placeholder="value[2]"
-            @focus="
-              (e) => {
-                e.target.type = value[0];
-              }
-            "
-            class="
-              shadow
-              appearance-none
-              border
-              rounded
-              w-full
-              py-2
-              px-3
-              text-gray-700
-              leading-tight
-              focus:outline-none focus:shadow-outline
-            "
-          />
-        </div>
-      </template>
-    </div>
-
+  <div class="w-full text-center">
     <button
-      @click="updateUserData()"
+      @click="show_edit_area = !show_edit_area"
       class="
+        mx-auto
         bg-blue-500
         hover:bg-blue-700
         text-white
@@ -105,8 +22,16 @@
         w-96
       "
     >
-      更新
+      編輯資料
     </button>
+
+    <van-popup v-model:show="show_edit_area" closeable>
+      <UpdatePassport
+        v-if="UserData && UserDataTemplate"
+        v-model="UserData"
+        :UserDataTemplate="UserDataTemplate"
+      />
+    </van-popup>
   </div>
 </template>
 <script>
@@ -114,18 +39,16 @@ import { useUserStore } from "../store/user.js";
 
 import { ref, onBeforeMount } from "vue";
 import { initQrcodeHandler, generateQrcodeHandler } from "@/tools/qrcode";
-import {
-  getUserDataTemplateHandler,
-  getUserDataHandler,
-  updateUserDataHandler,
-} from "@/api/user";
+import UpdatePassport from "@/components/UpdatePassport.vue";
+import { getUserDataTemplateHandler, getUserDataHandler } from "@/api/user";
+import { Popup } from "vant";
 
 export default {
+  components: { UpdatePassport, [Popup.name]: Popup },
   setup() {
     const userStatus = useUserStore();
 
     const UserDataTemplate = ref(null);
-
     /**
      * 取得使用這資料
      */
@@ -145,11 +68,9 @@ export default {
     };
 
     /**
-     * 更新會員資料
+     * 顯示編輯區
      */
-    const updateUserData = async () => {
-      UserData.value = await updateUserDataHandler(UserData.value);
-    };
+    const show_edit_area = ref(false);
 
     onBeforeMount(() => {
       initQrcodeHandler(); // 初始化QRcode產生器
@@ -160,8 +81,20 @@ export default {
       userStatus,
       UserData,
       UserDataTemplate,
-      updateUserData,
+      show_edit_area,
     };
   },
 };
 </script>
+
+
+<style scoped>
+input[type="date"][val=""]:before {
+  color: lightgrey;
+  content: attr(placeholder) !important;
+  margin-right: 0.5em;
+}
+/* input[type="date"]:before {
+  content: none !important;;
+} */
+</style>
