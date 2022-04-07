@@ -1,5 +1,5 @@
 <template>
-  <div v-if="UserData" class="p-5 w-96 mx-auto  m-3 bg-white">
+  <div v-if="UserData" class="p-5 w-96 mx-auto m-3 bg-white">
     <h1 class="font-bold text-2xl mb-3">編輯個人資料</h1>
     <div
       v-for="(value, key) in UserDataTemplate"
@@ -103,7 +103,7 @@
 <script>
 import { updateUserDataHandler } from "@/api/user";
 import { ref, watch } from "vue";
-import { Toast } from 'vant';
+import { Toast } from "vant";
 
 export default {
   props: ["modelValue", "UserDataTemplate"],
@@ -127,9 +127,8 @@ export default {
      * 更新會員資料
      */
     const updateUserData = async () => {
-        UserData.value = await updateUserDataHandler(UserData.value);
-        Toast.success('更新成功');
-
+      UserData.value = await updateUserDataHandler(UserData.value);
+      Toast.success("更新成功");
     };
     return {
       updateUserData,
@@ -139,3 +138,12 @@ export default {
   },
 };
 </script>
+
+
+<style scoped>
+input[type="date"][val=""]:before {
+  color: lightgrey;
+  content: attr(placeholder) !important;
+  margin-right: 0.5em;
+}
+</style>

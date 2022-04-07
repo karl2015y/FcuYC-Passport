@@ -87,14 +87,3 @@ export default {
 };
 </script>
 
-
-<style scoped>
-input[type="date"][val=""]:before {
-  color: lightgrey;
-  content: attr(placeholder) !important;
-  margin-right: 0.5em;
-}
-/* input[type="date"]:before {
-  content: none !important;;
-} */
-</style>
