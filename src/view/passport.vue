@@ -14,7 +14,7 @@
       class="flex items-center gap-3"
     >
       <template v-if="value.length >= 3">
-        <h2 class="w-20 px-2 mb-2" style="text-align-last: justify">
+        <h2 class="w-24 px-2 mb-2" style="text-align-last: justify">
           {{ value[1] }}
         </h2>
         <div
