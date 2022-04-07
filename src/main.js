@@ -1,8 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-
-import VConsole from 'vconsole';
-const vConsole = new VConsole();
+import './index.css'
+import 'animate.css';
+// import VConsole from 'vconsole';
+// const vConsole = new VConsole();
 
 
 
