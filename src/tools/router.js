@@ -22,6 +22,11 @@ const routes = [
         meta: {
             title: '會員護照'
         }
+    }, {
+        name: "game", path: '/game', component: () => import('../view/game.vue'),
+        meta: {
+            title: '抽籤大賞'
+        }
     },
 
 ]
