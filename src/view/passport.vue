@@ -4,10 +4,8 @@
   <br />
   {{ userStatus.roles }}
   <img v-if="UserData" :src="UserData.picture" alt="" />
-  <div v-show="generate_link_show">
-    <canvas style="display: none" id="canvas" />
-    <img src="" alt="" id="image" />
-  </div>
+  <div id="qrcode" />
+
   <div v-if="UserData" class="p-5">
     <h1 class="font-bold text-2xl">編輯區</h1>
     <div
@@ -90,7 +88,7 @@
     </div>
 
     <button
-      @click="updateUserDataHandler()"
+      @click="updateUserData()"
       class="
         bg-blue-500
         hover:bg-blue-700
@@ -110,135 +108,47 @@
 <script>
 import { useUserStore } from "../store/user.js";
 
-import { db } from "../tools/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { ref, onMounted, computed, onBeforeMount } from "vue";
+import { ref, onBeforeMount } from "vue";
+import { initQrcodeHandler, generateQrcodeHandler } from "@/tools/qrcode";
+import {
+  getUserDataTemplateHandler,
+  getUserDataHandler,
+  updateUserDataHandler,
+} from "@/api/user";
 
 export default {
   setup() {
     const userStatus = useUserStore();
-    /**
-     * 取得初始化模板
-     */
+
     const UserDataTemplate = ref(null);
-    const getUserDataTemplate = async () => {
-      const docRef = doc(db, "template", "signup");
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const template = JSON.parse(docSnap.data().data);
-        Object.keys(template).forEach((key) => {
-          if (key != "ver") {
-            template[key] = template[key].split(":");
-            if (template[key].length >= 4 && template[key][0] == "select") {
-              template[key][3] = template[key][3].split(",");
-            }
-          }
-        });
-        return template;
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("找不到模板");
-      }
-    };
+
     /**
      * 取得使用這資料
      */
     const UserData = ref(null);
-    const UserDataRef = ref(null);
     const getUserData = async () => {
-      const template = await getUserDataTemplate();
+      const template = await getUserDataTemplateHandler();
       UserDataTemplate.value = template;
-      const docRef = doc(db, "user", userStatus.user.email);
-      UserDataRef.value = docRef;
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        UserData.value = docSnap.data();
-        console.log("取得資料成功", UserData.value);
-        generateLinkHandler();
-        if (UserData.value.ver != template.ver) {
-          console.log("模板更新，建立對應欄位");
-          UserData.value = await updateUserDataFromTemplate(
-            docRef,
-            UserData.value,
-            template
-          );
-          console.log("已建立對應欄位");
-        }
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("無註冊資料，使用初始模板建立會員資料");
+      UserData.value = await getUserDataHandler(template);
 
-        Object.keys(template).forEach((key) => {
-          if (key != "ver") {
-            template[key] = "";
-          }
-        });
-        template["email"] = userStatus.user.email;
-        template["name"] = userStatus.user.name;
-        template["picture"] = userStatus.user.picture;
-        console.log(template);
-        setDoc(docRef, template);
-        console.log("註冊成功");
-        getUserData();
-      }
+      // 產生Qrcode
+      generateQrcodeHandler(
+        `${window.location.origin}/passport/${encodeURIComponent(
+          userStatus.user.email
+        ).replace(/\./g, "DOT")}`,
+        "qrcode"
+      );
     };
 
-    /**
-     * 更新模板
-     */
-    const updateUserDataFromTemplate = async (docRef, UserData, template) => {
-      console.log(template);
-      Object.keys(template).forEach((key) => {
-        if (!UserData.hasOwnProperty(key)) {
-          UserData[key] = "";
-        }
-      });
-      UserData["ver"] = template["ver"];
-      setDoc(docRef, UserData);
-      return UserData;
-    };
     /**
      * 更新會員資料
      */
-    const updateUserDataHandler = () => {
-      setDoc(UserDataRef.value, UserData.value);
-      console.log("更新成功");
-      getUserData();
-    };
-
-    /**
-     * 生成QRcode
-     */
-
-    const generate_link_show = ref(false);
-    const generate_link = computed(() => {
-      return `${window.location.origin}/passport/${encodeURIComponent(
-        userStatus.user.email
-      ).replace(/\./g, "DOT")}`;
-    });
-    const generateLinkHandler = () => {
-      generate_link_show.value = true;
-      const log = new QrCodeWithLogo({
-        canvas: document.getElementById("canvas"),
-        content: generate_link.value,
-        width: 380,
-        // download: true,
-        image: document.getElementById("image"),
-        logo: {
-          src: "/logo.jpg",
-        },
-      })
-        .toImage()
-        .then((item) => {
-          console.log(item);
-        });
+    const updateUserData = async () => {
+      UserData.value = await updateUserDataHandler(UserData.value);
     };
 
     onBeforeMount(() => {
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = "/qrcode-with-logo.min.js";
-      document.head.appendChild(script);
+      initQrcodeHandler(); // 初始化QRcode產生器
     });
 
     getUserData();
@@ -246,8 +156,7 @@ export default {
       userStatus,
       UserData,
       UserDataTemplate,
-      updateUserDataHandler,
-      generate_link_show,
+      updateUserData,
     };
   },
 };
