@@ -5,68 +5,13 @@ import { useUserStore } from "../store/user";
 import { watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
-import "../tools/firebase";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import { db } from "../tools/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { getDBDataHandler } from "@/api/user";
 
 export default {
   setup() {
     const router = useRouter();
     const route = useRoute();
     const userStatus = useUserStore();
-
-    /**
-     * 取得帳號權限角色
-     */
-    const getUserRolesHandler = async (email) => {
-      const docRef = doc(db, "roles", email);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        userStatus.roles = docSnap.data();
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("找不到角色");
-        userStatus.roles = {
-          isMember: false,
-        };
-      }
-    };
-    /**
-     * 到資料庫確定一下該用戶是否登記過，如果沒有就加上去
-     */
-    const getDBDataHandler = (email, password, callback = null) => {
-      const auth = getAuth();
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          getUserRolesHandler(email).then(() => {
-            if (callback) callback();
-          });
-        })
-        .catch((error) => {
-          if (error.code == "auth/user-disabled") {
-            alert(`該帳號(${email})已被停用，請聯絡中逢青管理員`);
-          } else if (error.code == "auth/user-not-found") {
-            createUserWithEmailAndPassword(auth, email, password).then(
-              (userCredential) => {
-                const user = userCredential.user;
-                getUserRolesHandler(email).then(() => {
-                  if (callback) callback();
-                });
-              }
-            );
-          } else {
-            alert(
-              `好像出錯了，請將此頁截圖，並聯絡中逢青管理員。\nError Code：${error.code}`
-            );
-          }
-        });
-    };
 
     /**
      * 將query 轉obj
