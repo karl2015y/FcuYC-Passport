@@ -25,6 +25,7 @@ export default {
       () =>
         userStatus.isLogin === false ||
         userStatus.user === null ||
+        userStatus.roles === null ||
         userStatus.loading.length > 0
     );
 

@@ -8,6 +8,7 @@ export  const useUserStore = defineStore('userStatus', {
       isLogin: false,
       user: null,
       loading:[],
+      roles: null,
     }
   },
 })

@@ -16,12 +16,15 @@ const startloadHandler = () => {
     userStatus.loading.push(now);
 }
 const stopLoadHandler = () => {
-    if (userStatus.loading.length > 0) userStatus.loading.shift();
+    setTimeout(() => {
+        if (userStatus.loading.length > 0) userStatus.loading.shift();
+    }, 666);
 }
 /**
  * 到資料庫確定一下該用戶是否登記過，如果沒有就加上去
  */
-export const getDBDataHandler = (email, password, callback = null) => {
+export const getDBDataHandler = async (email, password, callback = null) => {
+    userStatus.roles = await getUserRolesHandler(email)
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
@@ -200,6 +203,19 @@ export const getUserRolesHandler = async (email) => {
             isMember: false,
         };
     }
+};
+
+
+/**
+ * 修改會員的角色資料
+ */
+export const setUserRolesHandler = async (email, roleData) => {
+    startloadHandler()
+    const docRef = doc(db, "roles", email);
+    setDoc(docRef, roleData);
+    console.log("更新成功");
+    stopLoadHandler()
+    return await getUserRolesHandler(email)
 };
 
 

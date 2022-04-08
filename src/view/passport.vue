@@ -1,10 +1,10 @@
 <template>
-  自己跟管理員才能看和編輯的護照
+  <!-- 自己跟管理員才能看和編輯的護照 -->
   <!-- {{ UserData }}
   <br />
   {{ userStatus.roles }} -->
-  <PassportItem :UserData="UserData" />
-  <div id="qrcode" class="flex justify-center" />
+  <PassportItem class="my-5" :UserData="UserData" :UserDataTemplate="UserDataTemplate" />
+ 
 
   <div class="w-full text-center">
     <button
@@ -19,7 +19,7 @@
         px-4
         border border-blue-700
         rounded
-        w-96
+        w-2/3
       "
     >
       編輯資料
@@ -38,7 +38,7 @@
 import { useUserStore } from "../store/user.js";
 
 import { ref, onBeforeMount } from "vue";
-import { initQrcodeHandler, generateQrcodeHandler } from "@/tools/qrcode";
+
 import { getUserDataTemplateHandler, getMyDataHandler } from "@/api/user";
 import { Popup } from "vant";
 
@@ -59,14 +59,6 @@ export default {
       const template = await getUserDataTemplateHandler();
       UserDataTemplate.value = template;
       UserData.value = await getMyDataHandler(template);
-
-      // 產生Qrcode
-      generateQrcodeHandler(
-        `${window.location.origin}/passport/${encodeURIComponent(
-          userStatus.user.email
-        ).replace(/\./g, "DOT")}`,
-        "qrcode"
-      );
     };
 
     /**
@@ -74,9 +66,6 @@ export default {
      */
     const show_edit_area = ref(false);
 
-    onBeforeMount(() => {
-      initQrcodeHandler(); // 初始化QRcode產生器
-    });
 
     getUserData();
     return {
