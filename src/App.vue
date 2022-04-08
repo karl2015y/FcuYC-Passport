@@ -14,8 +14,6 @@
 
 
 <script>
-
-
 import Loading from "./components/Loading.vue";
 import { useUserStore } from "./store/user";
 import { computed } from "vue";
@@ -27,7 +25,7 @@ export default {
       () =>
         userStatus.isLogin === false ||
         userStatus.user === null ||
-        userStatus.roles === null
+        userStatus.loading.length > 0
     );
 
     return {
