@@ -11,6 +11,13 @@ import {
 } from "firebase/auth";
 
 
+const startloadHandler = () => {
+    const now = new Date().getTime()
+    userStatus.loading.push(now);
+}
+const stopLoadHandler = () => {
+    if (userStatus.loading.length > 0) userStatus.loading.shift();
+}
 /**
  * 到資料庫確定一下該用戶是否登記過，如果沒有就加上去
  */
@@ -50,6 +57,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
  * 取得初始化模板
  */
 export const getUserDataTemplateHandler = async () => {
+    startloadHandler()
     const docRef = doc(db, "template", "signup");
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -62,6 +70,7 @@ export const getUserDataTemplateHandler = async () => {
                 }
             }
         });
+        stopLoadHandler()
         return template;
     } else {
         // doc.data() will be undefined in this case
@@ -73,6 +82,7 @@ export const getUserDataTemplateHandler = async () => {
  * 取得使用這資料
  */
 export const getMyDataHandler = async (org_template = null) => {
+    startloadHandler()
     const template = org_template ? JSON.parse(JSON.stringify(org_template)) : await getUserDataTemplateHandler()
     const docRef = doc(db, "user", userStatus.user.email);
     const docSnap = await getDoc(docRef);
@@ -80,6 +90,7 @@ export const getMyDataHandler = async (org_template = null) => {
         let UserData = docSnap.data();
         console.log("取得資料成功", UserData);
         if (UserData.ver == template.ver) {
+            stopLoadHandler()
             return UserData
         }
         UserData["line_user_id"] = userStatus.user.user_id;
@@ -94,6 +105,7 @@ export const getMyDataHandler = async (org_template = null) => {
             org_template
         );
         console.log("已建立對應欄位");
+        stopLoadHandler()
         return UserData
     } else {
         // doc.data() will be undefined in this case
@@ -111,6 +123,7 @@ export const getMyDataHandler = async (org_template = null) => {
         console.log(template);
         setDoc(docRef, template);
         console.log("註冊成功");
+        stopLoadHandler()
         return await getMyDataHandler(org_template)
     }
 };
@@ -128,6 +141,7 @@ const updateUserDataFromTemplate = async (docRef, UserData, org_template) => {
     UserData["ver"] = template["ver"];
     setDoc(docRef, UserData);
     // return UserData;
+    stopLoadHandler()
     return await getMyDataHandler(org_template)
 };
 
@@ -135,9 +149,11 @@ const updateUserDataFromTemplate = async (docRef, UserData, org_template) => {
    * 更新會員資料
    */
 export const updateUserDataHandler = async (UserData) => {
+    startloadHandler()
     const docRef = doc(db, "user", userStatus.user.email);
     setDoc(docRef, UserData);
     console.log("更新成功");
+    stopLoadHandler()
     return await getMyDataHandler()
 };
 
@@ -147,6 +163,7 @@ export const updateUserDataHandler = async (UserData) => {
  * 取得特定會員的資料
  */
 export const getUserDataHandler = async (email, needRole = true) => {
+    startloadHandler()
     const docRef = doc(db, "user", email);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -157,6 +174,7 @@ export const getUserDataHandler = async (email, needRole = true) => {
             result = { UserRoles, UserData }
         }
         console.log("取得資料成功", result);
+        stopLoadHandler()
         return result
     } else {
         console.log("無註冊資料");
@@ -168,13 +186,16 @@ export const getUserDataHandler = async (email, needRole = true) => {
  * 取得特定會員的角色資料
  */
 export const getUserRolesHandler = async (email) => {
+    startloadHandler()
     const docRef = doc(db, "roles", email);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
+        stopLoadHandler()
         return docSnap.data();
     } else {
         // doc.data() will be undefined in this case
         console.log("找不到角色");
+        stopLoadHandler()
         return {
             isMember: false,
         };
