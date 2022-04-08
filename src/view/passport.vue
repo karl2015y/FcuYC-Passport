@@ -3,7 +3,7 @@
   <!-- {{ UserData }}
   <br />
   {{ userStatus.roles }} -->
-  <img v-if="UserData" :src="UserData.picture" alt="" />
+  <PassportItem :UserData="UserData" />
   <div id="qrcode" class="flex justify-center" />
 
   <div class="w-full text-center">
@@ -39,12 +39,14 @@ import { useUserStore } from "../store/user.js";
 
 import { ref, onBeforeMount } from "vue";
 import { initQrcodeHandler, generateQrcodeHandler } from "@/tools/qrcode";
-import UpdatePassport from "@/components/UpdatePassport.vue";
-import { getUserDataTemplateHandler, getUserDataHandler } from "@/api/user";
+import { getUserDataTemplateHandler, getMyDataHandler } from "@/api/user";
 import { Popup } from "vant";
 
+import PassportItem from "@/components/PassportItem.vue";
+import UpdatePassport from "@/components/UpdatePassport.vue";
+
 export default {
-  components: { UpdatePassport, [Popup.name]: Popup },
+  components: { PassportItem, UpdatePassport, [Popup.name]: Popup },
   setup() {
     const userStatus = useUserStore();
 
@@ -56,7 +58,7 @@ export default {
     const getUserData = async () => {
       const template = await getUserDataTemplateHandler();
       UserDataTemplate.value = template;
-      UserData.value = await getUserDataHandler(template);
+      UserData.value = await getMyDataHandler(template);
 
       // 產生Qrcode
       generateQrcodeHandler(
