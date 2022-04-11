@@ -62,10 +62,8 @@ export const generateQrcodeHandler = async (
 
     console.log('開始建立初始化QrCodeWithLogo');
     const qrcode_area = document.getElementById(qrcode_area_id);
-    if (qrcode_area.querySelector('img')) qrcode_area.querySelector('img').remove();
     const canvas_area = document.createElement("canvas");
-    const image_area = document.createElement("img");
-
+    const image_area = qrcode_area.querySelector('img');
     const log = new QrCodeWithLogo({
         canvas: canvas_area,
         content: generate_link,
@@ -79,6 +77,5 @@ export const generateQrcodeHandler = async (
         .toImage()
         .then(() => {
             console.log("qrcode 建立成功", generate_link);
-            qrcode_area.appendChild(image_area);
         });
 };
