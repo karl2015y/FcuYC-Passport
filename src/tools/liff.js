@@ -10,7 +10,7 @@ liff
         const userStatus = useUserStore();
         const is_dev = import.meta.env.DEV;
         if (is_dev) {
-            console.log("開發模式給假資料");
+            console.log("開發模式 給假資料");
             userStatus.isLogin = true;
             userStatus.user = {
                 name: "[test]林裕凱 Karl",
@@ -27,13 +27,35 @@ liff
                 liff.login({ redirectUri: window.location.href });
             } else {
                 console.log("已經登入了");
-                const { name, picture, sub, email } = liff.getDecodedIDToken();
-                userStatus.user = {
-                    name: name,
-                    picture: picture,
-                    user_id: sub,
-                    email: email,
-                };
+
+                const liff_user = userStatus.get('user')
+
+                if (liff_user == undefined) {
+                    console.log("完全沒有緩存 要等等");
+                    const { name, picture, sub, email } = liff.getDecodedIDToken();
+                    userStatus.set('user', {
+                        name: name,
+                        picture: picture,
+                        user_id: sub,
+                        email: email,
+                    })
+                } else {
+                    console.log("有緩存 先進 資料等等更新");
+                    userStatus.set('user', liff_user)
+                    setTimeout(() => {
+                        const { name, picture, sub, email } = liff.getDecodedIDToken();
+                        userStatus.set('user', {
+                            name: name,
+                            picture: picture,
+                            user_id: sub,
+                            email: email,
+                        })
+                    }, 10);
+
+                }
+
+
+
             }
         }
     });

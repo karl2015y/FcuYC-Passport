@@ -21,13 +21,33 @@ export default {
   components: { Loading },
   setup() {
     const userStatus = useUserStore();
-    const loadingStatus = computed(
-      () =>
+    const loadingStatus = computed(() => {
+      // console.log("isLogin", userStatus.isLogin === false, userStatus.isLogin);
+      // console.log(
+      //   "user",
+      //   userStatus.get("user") === null,
+      //   userStatus.get("user")
+      // );
+      // console.log(
+      //   "roles",
+      //   userStatus.get("roles") === null,
+      //   userStatus.get("roles")
+      // );
+      // console.log(
+      //   "UserData",
+      //   userStatus.get("UserData") === null,
+      //   userStatus.get("UserData")
+      // );
+      // console.log("loading", userStatus.loading.length);
+
+      return (
         userStatus.isLogin === false ||
-        userStatus.user === null ||
-        userStatus.roles === null ||
+        userStatus.get("user") === null ||
+        userStatus.get("roles") === null ||
+        userStatus.get("UserData") === null ||
         userStatus.loading.length > 0
-    );
+      );
+    });
 
     return {
       Loading,

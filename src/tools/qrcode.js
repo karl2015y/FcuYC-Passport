@@ -3,16 +3,41 @@
  */
 
 export const initQrcodeHandler = () => {
-    console.log("初始化QrCodeWithLogo");
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src = "/qrcode-with-logo.min.js";
-    document.head.appendChild(script);
+
+
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            console.log("初始化QrCodeWithLogo done");
-            resolve();
-        }, 1000);
+        if (document.head.querySelector("script#qrcode-with-logo")) { resolve(); };
+
+
+
+        try {
+            if (QrCodeWithLogo) {
+                console.log("已經有 QrCodeWithLogo done");
+                resolve();
+            }
+        } catch (error) {
+            console.log("初始化QrCodeWithLogo");
+            var script = document.createElement("script");
+            script.id = "qrcode-with-logo"
+            script.type = "text/javascript";
+            script.src = "/qrcode-with-logo.min.js";
+            document.head.appendChild(script);
+        }
+
+
+        const x = setInterval(() => {
+            try {
+                if (QrCodeWithLogo) {
+                    console.log("初始化QrCodeWithLogo done");
+                    clearInterval(x)
+                    resolve();
+                }
+            } catch (error) {
+                console.log("初始化QrCodeWithLogo ing");
+
+            }
+        }, 1);
+
     });
 
 
@@ -29,12 +54,15 @@ export const initQrcodeHandler = () => {
  * @param {String} generate_link 要轉換的連結
  * @param {ElementById} qrcode_area_id 要顯示的位置
  */
-export const generateQrcodeHandler = (
+export const generateQrcodeHandler = async (
     generate_link,
     qrcode_area_id = "qrcode"
 ) => {
+    if (document.head.querySelector("script#qrcode-with-logo") == null) await initQrcodeHandler();
+
     console.log('開始建立初始化QrCodeWithLogo');
     const qrcode_area = document.getElementById(qrcode_area_id);
+    if (qrcode_area.querySelector('img')) qrcode_area.querySelector('img').remove();
     const canvas_area = document.createElement("canvas");
     const image_area = document.createElement("img");
 

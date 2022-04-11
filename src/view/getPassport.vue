@@ -57,7 +57,7 @@ export default {
     /**
      * 取得查看者的權限
      */
-    const iMAdmin = computed(() => userStatus.roles["isAdmin"] ?? false);
+    const iMAdmin = computed(() => userStatus.get('roles')["isAdmin"] ?? false);
 
     /**
      * 取得使用這資料
@@ -97,9 +97,8 @@ export default {
       });
     };
 
-    onMounted(() => {
       getUserData(findEmail.value);
-    });
+  
     return {
       UserData,
       UserRoles,

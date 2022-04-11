@@ -19,12 +19,22 @@
             'border-blue-500': UserData.gender == '男',
           }"
         />
-        <div class="mt-2">
-          <span class="border border-solid p-0.5 rounded shadow mx-0.5" v-if="roles.isAdmin">🧙管理員</span>
-          <span class="border border-solid p-0.5 rounded shadow mx-0.5" v-if="roles.isMember">🏅會員</span>
+        <div class="mt-2" v-if="roles">
+          <button @click="scan()" v-if="roles.isAdmin">
+            <span class="border border-solid p-0.5 rounded shadow mx-0.5">
+              🧙管理員</span
+            >
+          </button>
+          <span
+            class="border border-solid p-0.5 rounded shadow mx-0.5"
+            v-if="roles.isMember"
+            >🏅會員</span
+          >
         </div>
       </div>
-      <div id="qrcode" class="flex justify-center" />
+      <div id="qrcode" class="flex justify-center" >
+        <img src="/qrcode-loading.jpg">
+      </div>
     </div>
     <div v-if="UserData">
       <div
@@ -46,10 +56,11 @@
   </div>
 </template>
 <script>
-import { computed, onMounted } from "vue";
+import { computed, onBeforeMount, watch } from "vue";
 import { Dialog } from "vant";
 import { useUserStore } from "../store/user.js";
 import { initQrcodeHandler, generateQrcodeHandler } from "@/tools/qrcode";
+import { useRouter } from "vue-router";
 
 export default {
   components: {
@@ -57,24 +68,58 @@ export default {
   },
   props: ["UserData", "UserDataTemplate"],
   setup(props) {
+    const router = useRouter();
+
     const UserData = computed(() => props.UserData);
+    const UserDataTemplate = computed(() => props.UserDataTemplate);
+
     const userStatus = useUserStore();
-    const roles = computed(() => userStatus.roles);
-    onMounted(() => {
-      // 產生Qrcode
-      initQrcodeHandler().then(() => {
+    const roles = computed(() => userStatus.get("roles"));
+    const scan = async () => {
+      try {
+        const result = await liff.scanCodeV2();
+        console.log("scanCodeV2 result", result.value);
+        const path = "/passport/";
+        const email =
+          result.value.indexOf(path) > 0 ? result.value.split(path)[1] : null;
+        console.log("get code", email);
+        if (email) {
+          router.push({ name: "findPassport", params: { email } });
+        } else {
+          alert("錯誤QRcdoe");
+          console.log("錯誤QRcdoe");
+        }
+      } catch (error) {
+        console.log("scanCodeV2 error", error);
+      }
+    };
+
+    watch(
+      () => UserData.value,
+      () => {
+        // 產生Qrcode
         generateQrcodeHandler(
           `${window.location.origin}/passport/${encodeURIComponent(
-            userStatus.user.email
+            UserData.value["email"]
           ).replace(/\./g, "DOT")}`,
           "qrcode"
         );
-      });
+        // initQrcodeHandler().then(() => {
+
+        // });
+      }
+    );
+
+    
+    onBeforeMount(() => {
+      initQrcodeHandler();
     });
 
     return {
+      UserDataTemplate,
       UserData,
       roles,
+      scan,
     };
   },
 };

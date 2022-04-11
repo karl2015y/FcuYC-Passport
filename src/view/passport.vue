@@ -3,8 +3,11 @@
   <!-- {{ UserData }}
   <br />
   {{ userStatus.roles }} -->
-  <PassportItem class="my-5" :UserData="UserData" :UserDataTemplate="UserDataTemplate" />
- 
+  <PassportItem
+    class="my-5"
+    :UserData="UserData"
+    :UserDataTemplate="UserDataTemplate"
+  />
 
   <div class="w-full text-center">
     <button
@@ -37,7 +40,7 @@
 <script>
 import { useUserStore } from "../store/user.js";
 
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, computed } from "vue";
 
 import { getUserDataTemplateHandler, getMyDataHandler } from "@/api/user";
 import { Popup } from "vant";
@@ -50,22 +53,21 @@ export default {
   setup() {
     const userStatus = useUserStore();
 
-    const UserDataTemplate = ref(null);
+    const UserDataTemplate = computed(() => userStatus.get("UserDataTemplate"));
     /**
      * 取得使用這資料
      */
-    const UserData = ref(null);
+    const UserData = computed(() => userStatus.get("UserData"));
     const getUserData = async () => {
       const template = await getUserDataTemplateHandler();
-      UserDataTemplate.value = template;
-      UserData.value = await getMyDataHandler(template);
+      userStatus.set("UserDataTemplate", template);
+      userStatus.set("UserData", await getMyDataHandler(template));
     };
 
     /**
      * 顯示編輯區
      */
     const show_edit_area = ref(false);
-
 
     getUserData();
     return {

@@ -102,24 +102,17 @@
 
 <script>
 import { updateUserDataHandler } from "@/api/user";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
+import { useUserStore } from "../store/user.js";
 import { Toast } from "vant";
 
 export default {
   props: ["modelValue", "UserDataTemplate"],
   components: { [Toast.name]: Toast },
   setup(props, content) {
-    //   雙向value
-    const UserData = ref(props.modelValue);
-    watch(
-      () => props.modelValue,
-      (val) => {
-        UserData.value = val;
-      }
-    );
-    watch(UserData, (val) => {
-      content.emit("update:modelValue", val);
-    });
+    const userStatus = useUserStore();
+
+    const UserData = computed(() => props.modelValue);
 
     const UserDataTemplate = ref(props.UserDataTemplate);
 
@@ -127,8 +120,13 @@ export default {
      * 更新會員資料
      */
     const updateUserData = async () => {
-      UserData.value = await updateUserDataHandler(UserData.value);
-      Toast.success("更新成功");
+      userStatus.set("UserData", await updateUserDataHandler(UserData.value));
+      setTimeout(() => {
+        Toast.success({
+          message: "更新成功",
+          duration: 2000,
+        });
+      }, 1000);
     };
     return {
       updateUserData,
