@@ -64,6 +64,7 @@ export const generateQrcodeHandler = async (
     const qrcode_area = document.getElementById(qrcode_area_id);
     const canvas_area = document.createElement("canvas");
     const image_area = qrcode_area.querySelector('img');
+    image_area.src = "/qrcode-loading.jpg"
     const log = new QrCodeWithLogo({
         canvas: canvas_area,
         content: generate_link,
