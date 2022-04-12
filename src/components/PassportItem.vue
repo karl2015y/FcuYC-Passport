@@ -8,9 +8,10 @@
         touchX = e.touches[0].clientX;
       }
     "
-    @touchend="
+   
+    @touchmove="
       (e) => {
-        touchX = e.changedTouches[0].clientX;
+        touchX = e.touches[0].clientX;
       }
     "
     class="
