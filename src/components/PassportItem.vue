@@ -83,6 +83,7 @@
           <!-- 開始設定資料，取得完整功能 -->
           <div class="mt-[10.513vw] flex justify-center">
             <button
+              @click="currentPage = 2"
               class="
                 w-[49.744vw]
                 h-[6.923vw]
@@ -141,10 +142,10 @@
         </div>
       </swiper-slide>
     </swiper>
-        <!-- 頁面選擇 -->
-          <div class="mt-[14.615vw] mb-[3.846vw]">
-            <pagectrl :pages="2" v-model="currentPage" />
-          </div>
+    <!-- 頁面選擇 -->
+    <div class="mt-[14.615vw] mb-[3.846vw]">
+      <pagectrl :pages="2" v-model="currentPage" />
+    </div>
   </div>
 </template>
 <script>
