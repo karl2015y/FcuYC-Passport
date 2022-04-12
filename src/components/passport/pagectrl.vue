@@ -2,20 +2,48 @@
   <div class="flex gap-[3.333vw] justify-center">
     <template v-for="page in pages" :key="page">
       <div
-        class="w-[2.564vw] h-[2.564vw] shadow-[0_0_1.538vw_#0000004D] rounded-full"
+        @click="currentPage = page"
+        class="
+          w-[2.564vw]
+          h-[2.564vw]
+          shadow-[0_0_1.538vw_#0000004D]
+          rounded-full
+        "
         :class="page == currentPage ? 'bg-[#D7D7D7]' : 'bg-white'"
       />
     </template>
   </div>
 </template>
 <script>
-import { computed } from "vue";
+import { computed, watch } from "vue";
+import { useSwiper } from "swiper/vue";
 
 export default {
-  props: ["current-page", "pages"],
-  setup(props) {
+  props: ["modelValue", "pages"],
+  setup(props, content) {
+    const swiper = useSwiper();
+
     const pages = computed(() => props.pages);
-    const currentPage = computed(() => props.currentPage);
+    const currentPage = computed({
+      get: () => props.modelValue,
+      set: (val) => {
+        if (swiper) {
+          swiper.value.slideTo(val - 1);
+        } else {
+          content.emit("update:modelValue", val);
+        }
+      },
+    });
+
+    watch(
+      () => currentPage.value,
+      (val) => {
+        if (swiper) {
+          swiper.value.slideTo(val - 1);
+        }
+      }
+    );
+
     return {
       pages,
       currentPage,

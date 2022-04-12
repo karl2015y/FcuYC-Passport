@@ -13,6 +13,7 @@
     "animate.css": "^4.1.1",
     "firebase": "^9.6.10",
     "pinia": "^2.0.13",
+    "swiper": "^8.1.0",
     "typed.js": "^2.0.12",
     "vant": "^3.4.7",
     "vconsole": "^3.14.5",

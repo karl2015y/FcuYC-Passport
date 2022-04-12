@@ -3,7 +3,7 @@
     @click="show_edit_area = !show_edit_area"
     :class="roles.isMember ? 'bg-[#9580E8]' : 'bg-[#6AB7E6]'"
     class="
-      bg-[#9580E8] bg-center bg-no-repeat bg-clip-padding bg-origin-padding
+      bg-center bg-no-repeat bg-clip-padding bg-origin-padding
       shadow-[0_0.769vw_1.538vw_#00000029]
       rounded-[5.641vw]
       text-[3.333vw]
@@ -16,21 +16,21 @@
     編輯資料
   </button>
 
-  <van-popup v-model:show="show_edit_area" closeable>
-    <div v-if="UserData" class="p-5 w-96 mx-auto m-3 bg-white">
+  <van-popup v-model:show="show_edit_area" closeable teleport="body" position="bottom">
+    <div v-if="UserData" class="p-5 mx-auto m-3 bg-white min-w-full w-[90vw]">
       <h1 class="font-bold text-2xl mb-3">編輯個人資料</h1>
       <div
         v-for="(value, key) in UserDataTemplate"
         :key="key"
-        class="flex items-center gap-3"
+        class="flex items-center flex-col"
       >
         <template v-if="value.length >= 3">
-          <h2 class="w-24 px-2 mb-2" style="text-align-last: justify">
+          <h2 class="w-full mt-2 mb-1">
             {{ value[1] }}
           </h2>
           <div
             v-if="value[0] == `select` && value.length >= 4"
-            class="inline-block relative w-72 mb-2"
+            class="inline-block relative w-full mb-2"
           >
             <select
               :name="key"
@@ -76,7 +76,7 @@
               </svg>
             </div>
           </div>
-          <div v-else class="w-72 mb-2">
+          <div v-else class="w-full mb-2">
             <input
               v-model="UserData[key]"
               :placeholder="value[2]"
@@ -101,19 +101,20 @@
 
       <button
         @click="updateUserData()"
+        :class="roles.isMember ? 'bg-[#9580E8]' : 'bg-[#6AB7E6]'"
         class="
-          bg-blue-500
-          hover:bg-blue-700
-          text-white
+          mt-3
+          bg-center bg-no-repeat bg-clip-padding bg-origin-padding
+          shadow-[0_0.769vw_1.538vw_#00000029]
+          rounded-[5.641vw]
+          text-[5vw]
           font-bold
-          py-2
-          px-4
-          border border-blue-700
-          rounded
+          text-white
           w-full
+          h-[10vw]
         "
       >
-        儲存
+        編輯資料
       </button>
     </div>
   </van-popup>
