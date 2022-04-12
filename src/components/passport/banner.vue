@@ -117,10 +117,10 @@
           <div v-show="currentPage == 2">
             <picture class="w-full h-auto">
               <source
-                srcset="/design/banner girl/banner girl@2x.png"
+                srcset="/design/banner_girl/banner_girl@2x.png"
                 media="(min-width: 500px)"
               />
-              <img src="/design/banner girl/banner girl.png" alt="會員" />
+              <img src="/design/banner_girl/banner_girl.png" alt="會員" />
             </picture>
           </div>
         </transition>
@@ -128,7 +128,6 @@
     </div>
   </div>
 
-  <!-- <img src="/design/banner girl/banner girl.png" alt="非會員"> -->
 </template>
 
 <script>

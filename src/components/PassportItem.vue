@@ -146,10 +146,10 @@ import { Dialog } from "vant";
 import { useUserStore } from "../store/user.js";
 import { initQrcodeHandler, generateQrcodeHandler } from "@/tools/qrcode";
 import { useRouter } from "vue-router";
-import banner from "./passport/banner.vue";
-import userdataTable from "./passport/userdata-table.vue";
+import banner from "@/components/passport/banner.vue";
+import userdataTable from "@/components/passport/userdata-table.vue";
 import UpdatePassport from "@/components/UpdatePassport.vue";
-import pagectrl from "./passport/pagectrl.vue";
+import pagectrl from "@/components/passport/pagectrl.vue";
 
 export default {
   components: {
