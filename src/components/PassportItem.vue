@@ -2,10 +2,21 @@
   <!-- banner -->
   <banner :UserData="UserData" :roles="roles" />
 
-  <div class="bg-white flex flex-col justify-center items-center mx-[7.692vw] px-[8.205vw]">
-    <div class="px-4 flex items-center justify-around">
+  <div
+    class="
+      relative
+      bg-white
+      flex flex-col
+      justify-center
+      items-center
+      mx-[7.692vw]
+      rounded-[33px] rounded-t-none
+      shadow-[0_0_40px_#00000029]
+    "
+  >
+    <!-- <div class="px-4 flex items-center justify-around">
       <div class="w-full">
-        <!-- <div class="mt-2" v-if="roles">
+        <div class="mt-2" v-if="roles">
           <button @click="scan()" v-if="roles.isAdmin">
             <span class="border border-solid p-0.5 rounded shadow mx-0.5">
               🧙管理員</span
@@ -16,30 +27,63 @@
             v-if="roles.isMember"
             >🏅會員</span
           >
-        </div> -->
+        </div>
+      </div>
+    </div> -->
+    <!-- 首頁 -->
+    <div class="w-full px-[9.744vw]">
+      <div class="mt-[6.154vw] flex justify-between">
+        <div
+          class="text-[4.872vw] leading-[6.923vw] font-bold text-[#707070]"
+          v-if="UserData.name ?? false"
+        >
+          {{ UserData.name }}
+        </div>
+        <div>
+          <UpdatePassport
+            :UserData="UserData"
+            :UserDataTemplate="UserDataTemplate"
+          />
+        </div>
+      </div>
+
+
+      <div class="mt-[14.615vw] mb-[3.846vw]">
+        <pagectrl :pages="2" :current-page="1" />
       </div>
     </div>
-    <div v-if="UserData" class="w-full">
-      <div
-        v-for="(value, key) in UserDataTemplate"
-        :key="key"
-        class="flex items-center justify-between"
-      >
-        <template v-if="value.length >= 3">
-          <h2 class="text-[3.076vw] leading-[4.358vw]">
-            {{ value[1] }}
-          </h2>
 
-          <div class="">
-            {{ UserData[key] ?? false ? UserData[key] : "無" }}
-          </div>
-        </template>
+    <!-- 資料表 -->
+    <div class="w-full px-[9.744vw]">
+      <div class="mt-[6.154vw] flex justify-between">
+        <div
+          class="text-[4.872vw] leading-[6.923vw] font-bold text-[#707070]"
+          v-if="UserData.name ?? false"
+        >
+          {{ UserData.name }}
+        </div>
+        <div>
+          <UpdatePassport
+            :UserData="UserData"
+            :UserDataTemplate="UserDataTemplate"
+          />
+        </div>
+      </div>
+      <div class="mx-[2.051vw]">
+        <userdataTable
+          :UserData="UserData"
+          :UserDataTemplate="UserDataTemplate"
+        />
+      </div>
+
+      <div class="mt-[14.615vw] mb-[3.846vw]">
+        <pagectrl :pages="2" :current-page="2" />
       </div>
     </div>
 
-    <div id="qrcode" class="flex justify-center">
+    <!-- <div id="qrcode" class="flex justify-center">
       <img src="/qrcode-loading.jpg" />
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -49,11 +93,17 @@ import { useUserStore } from "../store/user.js";
 import { initQrcodeHandler, generateQrcodeHandler } from "@/tools/qrcode";
 import { useRouter } from "vue-router";
 import banner from "./passport/banner.vue";
+import userdataTable from "./passport/userdata-table.vue";
+import UpdatePassport from "@/components/UpdatePassport.vue";
+import pagectrl from "./passport/pagectrl.vue";
 
 export default {
   components: {
     [Dialog.Component.name]: Dialog.Component,
     banner,
+    userdataTable,
+    UpdatePassport,
+    pagectrl,
   },
   props: ["UserData", "UserDataTemplate", "roles"],
   setup(props) {
