@@ -22,6 +22,7 @@
       mx-[7.692vw]
       rounded-[33px] rounded-t-none
       shadow-[0_0_40px_#00000029]
+      pb-10
     "
   >
     <!-- <div class="px-4 flex items-center justify-around">
@@ -45,7 +46,7 @@
       enter-active-class="animate__animated animate__fadeInLeft animate__faster pb-10"
       leave-active-class="animate__animated hidden absolute"
     >
-      <div v-show="currentPage == 1" class="w-full px-[8.205vw]  bg-white ">
+      <div v-show="currentPage == 1" class="w-full px-[8.205vw]">
         <!-- 名字 -->
         <div class="mt-[6.154vw] flex justify-between">
           <div v-if="UserData.name ?? false">
@@ -97,6 +98,10 @@
             <img src="/qrcode-loading.jpg" class="w-[38vw] h-[38vw]" />
           </div>
         </div>
+        <!-- 頁面選擇 -->
+        <div class="mt-[14.615vw] mb-[3.846vw]">
+          <pagectrl :pages="2" :current-page="currentPage" />
+        </div>
       </div>
     </transition>
 
@@ -105,7 +110,7 @@
       enter-active-class="animate__animated animate__fadeInRight animate__faster pb-10"
       leave-active-class="animate__animated hidden absolute"
     >
-      <div v-show="currentPage == 2" class="w-full px-[9.744vw]  bg-white ">
+      <div v-show="currentPage == 2" class="w-full px-[9.744vw]">
         <div class="mt-[6.154vw] flex justify-between">
           <div
             class="text-[4.872vw] leading-[6.923vw] font-bold text-[#707070]"
@@ -126,12 +131,12 @@
             :UserDataTemplate="UserDataTemplate"
           />
         </div>
+        <!-- 頁面選擇 -->
+        <div class="mt-[14.615vw] mb-[3.846vw]">
+          <pagectrl :pages="2" :current-page="currentPage" />
+        </div>
       </div>
     </transition>
-
-    <div class="mt-[14.615vw] mb-[3.846vw]">
-      <pagectrl :pages="2" :current-page="currentPage" />
-    </div>
   </div>
 </template>
 <script>
@@ -190,10 +195,12 @@ export default {
         }
         console.log(newX, oldX, newX - oldX);
         touchX.value = null;
-        if (newX - oldX < 0) {
-          currentPage.value = 2;
-        } else {
-          currentPage.value = 1;
+        if (Math.abs(newX - oldX) > 80) {
+          if (newX - oldX < 0) {
+            currentPage.value = 2;
+          } else {
+            currentPage.value = 1;
+          }
         }
       }
     );
