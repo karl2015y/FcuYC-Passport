@@ -29,6 +29,14 @@ const routes = [
         }
     },
 
+
+    {
+        name: "vw", path: '/vw', component: () => import('../view/vwcompute.vue'),
+        meta: {
+            title: '計算vw'
+        }
+    },
+
 ]
 
 
