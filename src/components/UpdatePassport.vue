@@ -1,6 +1,7 @@
 <template>
   <button
     @click="show_edit_area = !show_edit_area"
+    :class="roles.isMember ? 'bg-[#9580E8]' : 'bg-[#6AB7E6]'"
     class="
       bg-[#9580E8] bg-center bg-no-repeat bg-clip-padding bg-origin-padding
       shadow-[0_0.769vw_1.538vw_#00000029]
@@ -126,10 +127,11 @@ import { Toast } from "vant";
 import { Popup } from "vant";
 
 export default {
-  props: ["UserData", "UserDataTemplate"],
+  props: ["UserData", "UserDataTemplate", "roles"],
   components: { [Toast.name]: Toast, [Popup.name]: Popup },
   setup(props, content) {
     const userStatus = useUserStore();
+    const roles = computed(() => props.roles);
 
     const UserData = computed(() => props.UserData);
     const UserDataTemplate = computed(() => props.UserDataTemplate);
@@ -154,6 +156,7 @@ export default {
       UserData,
       UserDataTemplate,
       show_edit_area,
+      roles,
     };
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <!-- banner -->
-  <banner :UserData="UserData" :roles="roles" />
+  <banner :UserData="UserData" :roles="roles" :current-page="currentPage" />
 
   <div
     @touchstart="
@@ -85,9 +85,9 @@
               leading-[4.872vw]
               font-bold
               text-white
-              bg-[#9580E8]
               shadow-[0_0.769vw_1.538vw_#00000029]
             "
+            :class="roles.isMember ? 'bg-[#9580E8]' : 'bg-[#6AB7E6]'"
           >
             開始設定資料，取得完整功能
           </button>
@@ -120,6 +120,7 @@
           </div>
           <div>
             <UpdatePassport
+              :roles="roles"
               :UserData="UserData"
               :UserDataTemplate="UserDataTemplate"
             />
