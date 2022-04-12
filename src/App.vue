@@ -7,7 +7,28 @@
   >
     <Loading v-if="loadingStatus" />
   </transition>
-  <router-view />
+  <div class="bg-[#F0F0F0] flex flex-col">
+    <div class="w-screen">
+      <picture class="w-[41.753vw]">
+        <source
+          srcset="/design/background_top/background_top@2x.png"
+          media="(min-width: 473px)"
+        />
+        <img src="/design/background_top/background_top.png" alt="上背景" />
+      </picture>
+    </div>
+    <div class="font-sans">
+      <router-view />
+    </div>
+
+    <div class="w-screen flex justify-end -mt-[12.23vw]">
+      <img
+        class="w-[33.179%]"
+        src="/design/backgroung_bottom/backgroung_bottom.png"
+        alt=""
+      />
+    </div>
+  </div>
 </template>
 <script >
 </script>

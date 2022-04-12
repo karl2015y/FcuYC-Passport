@@ -4,9 +4,9 @@
   <br />
   {{ userStatus.roles }} -->
   <PassportItem
-    class="my-5"
     :UserData="UserData"
     :UserDataTemplate="UserDataTemplate"
+    :roles="roles"
   />
 
   <div class="w-full text-center">
@@ -63,6 +63,8 @@ export default {
       userStatus.set("UserDataTemplate", template);
       userStatus.set("UserData", await getMyDataHandler(template));
     };
+    const roles = computed(() => userStatus.get("roles"));
+
 
     /**
      * 顯示編輯區
@@ -75,6 +77,7 @@ export default {
       UserData,
       UserDataTemplate,
       show_edit_area,
+      roles
     };
   },
 };
