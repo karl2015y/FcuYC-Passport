@@ -3,6 +3,16 @@
   <banner :UserData="UserData" :roles="roles" />
 
   <div
+    @touchstart="
+      (e) => {
+        touchX = e.touches[0].clientX;
+      }
+    "
+    @touchend="
+      (e) => {
+        touchX = e.changedTouches[0].clientX;
+      }
+    "
     class="
       relative
       bg-white
@@ -31,63 +41,101 @@
       </div>
     </div> -->
     <!-- 首頁 -->
-    <div class="w-full px-[9.744vw]">
-      <div class="mt-[6.154vw] flex justify-between">
-        <div
-          class="text-[4.872vw] leading-[6.923vw] font-bold text-[#707070]"
-          v-if="UserData.name ?? false"
-        >
-          {{ UserData.name }}
+    <transition
+      enter-active-class="animate__animated animate__fadeInLeft animate__faster pb-10"
+      leave-active-class="animate__animated hidden absolute"
+    >
+      <div v-show="currentPage == 1" class="w-full px-[8.205vw]  bg-white ">
+        <!-- 名字 -->
+        <div class="mt-[6.154vw] flex justify-between">
+          <div v-if="UserData.name ?? false">
+            <div class="text-[3.077vw] leading-[4.359vw] text-[#707070]">
+              姓名
+            </div>
+            <div
+              class="
+                ml-[8.205vw]
+                text-[4.103vw]
+                leading-[6.154vw]
+                text-[#707070]
+              "
+            >
+              {{ UserData.name }}
+            </div>
+          </div>
+          <div class="w-[9.744vw]">
+            <picture class="w-full h-auto">
+              <source
+                s0rcset="/design/logo/logo@2x.png"
+                media="(min-width: 500px)"
+              />
+              <img src="/design/logo/logo.png" alt="logo" />
+            </picture>
+          </div>
         </div>
-        <div>
-          <UpdatePassport
-            :UserData="UserData"
-            :UserDataTemplate="UserDataTemplate"
-          />
+        <!-- 開始設定資料，取得完整功能 -->
+        <div class="mt-[10.513vw] flex justify-center">
+          <button
+            class="
+              w-[49.744vw]
+              h-[6.923vw]
+              rounded-[5.641vw]
+              text-[3.333vw]
+              leading-[4.872vw]
+              font-bold
+              text-white
+              bg-[#9580E8]
+              shadow-[0_0.769vw_1.538vw_#00000029]
+            "
+          >
+            開始設定資料，取得完整功能
+          </button>
+        </div>
+        <!-- Qrcode -->
+        <div class="mt-[4vw]">
+          <div id="qrcode" class="flex justify-center">
+            <img src="/qrcode-loading.jpg" class="w-[38vw] h-[38vw]" />
+          </div>
         </div>
       </div>
-
-
-      <div class="mt-[14.615vw] mb-[3.846vw]">
-        <pagectrl :pages="2" :current-page="1" />
-      </div>
-    </div>
+    </transition>
 
     <!-- 資料表 -->
-    <div class="w-full px-[9.744vw]">
-      <div class="mt-[6.154vw] flex justify-between">
-        <div
-          class="text-[4.872vw] leading-[6.923vw] font-bold text-[#707070]"
-          v-if="UserData.name ?? false"
-        >
-          {{ UserData.name }}
+    <transition
+      enter-active-class="animate__animated animate__fadeInRight animate__faster pb-10"
+      leave-active-class="animate__animated hidden absolute"
+    >
+      <div v-show="currentPage == 2" class="w-full px-[9.744vw]  bg-white ">
+        <div class="mt-[6.154vw] flex justify-between">
+          <div
+            class="text-[4.872vw] leading-[6.923vw] font-bold text-[#707070]"
+            v-if="UserData.name ?? false"
+          >
+            {{ UserData.name }}
+          </div>
+          <div>
+            <UpdatePassport
+              :UserData="UserData"
+              :UserDataTemplate="UserDataTemplate"
+            />
+          </div>
         </div>
-        <div>
-          <UpdatePassport
+        <div class="mx-[2.051vw]">
+          <userdataTable
             :UserData="UserData"
             :UserDataTemplate="UserDataTemplate"
           />
         </div>
       </div>
-      <div class="mx-[2.051vw]">
-        <userdataTable
-          :UserData="UserData"
-          :UserDataTemplate="UserDataTemplate"
-        />
-      </div>
+    </transition>
 
-      <div class="mt-[14.615vw] mb-[3.846vw]">
-        <pagectrl :pages="2" :current-page="2" />
-      </div>
+    <div class="mt-[14.615vw] mb-[3.846vw]">
+      <pagectrl :pages="2" :current-page="currentPage" />
     </div>
-
-    <!-- <div id="qrcode" class="flex justify-center">
-      <img src="/qrcode-loading.jpg" />
-    </div> -->
   </div>
 </template>
 <script>
-import { computed, onBeforeMount, watch } from "vue";
+import { computed, onBeforeMount, ref, watch } from "vue";
 import { Dialog } from "vant";
 import { useUserStore } from "../store/user.js";
 import { initQrcodeHandler, generateQrcodeHandler } from "@/tools/qrcode";
@@ -132,6 +180,24 @@ export default {
         console.log("scanCodeV2 error", error);
       }
     };
+    //檢查左滑右滑
+    const touchX = ref(null);
+    watch(
+      () => touchX.value,
+      (newX, oldX) => {
+        if (newX == null || oldX == null) {
+          return;
+        }
+        console.log(newX, oldX, newX - oldX);
+        touchX.value = null;
+        if (newX - oldX < 0) {
+          currentPage.value = 2;
+        } else {
+          currentPage.value = 1;
+        }
+      }
+    );
+    const currentPage = ref(1);
 
     watch(
       () => UserData.value,
@@ -158,6 +224,8 @@ export default {
       UserData,
       roles,
       scan,
+      touchX,
+      currentPage,
     };
   },
 };

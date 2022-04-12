@@ -5,9 +5,9 @@
     enter-active-class="animate__animated animate__fadeIn animate__slower"
     leave-active-class="animate__animated animate__fadeOut animate__delay-1s"
   >
-    <Loading v-if="loadingStatus" />
+    <Loading v-show="loadingStatus" />
   </transition>
-  <div class="bg-[#F0F0F0] flex flex-col">
+  <div class="bg-[#F0F0F0] flex flex-col max-h-screen min-h-screen">
     <div class="w-screen">
       <picture class="w-[41.753vw]">
         <source
@@ -17,7 +17,7 @@
         <img src="/design/background_top/background_top.png" alt="上背景" />
       </picture>
     </div>
-    <div class="font-sans">
+    <div class="font-sans h-screen">
       <router-view />
     </div>
 
