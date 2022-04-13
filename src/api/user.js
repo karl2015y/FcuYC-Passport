@@ -74,16 +74,16 @@ const addUserCounter = () => {
 }
 
 // 亂數英文字
-const getRandomLetter = (max) => {
+const getRandomLetter = (max, possible= "ABEFGHKMNPQRSTWXYZ") => {
     var text = "";
-    var possible = "ABEFGHKMNPQRSTWXYZ";
     for (var i = 0; i < max; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
 }
+
 // 取得ID
 const getUserId = () => {
-    return getRandomLetter(1) + String(current_user_number).padStart(3, '0')
+    return getRandomLetter(1) +getRandomLetter(1,"0123456789")+ String(current_user_number).padStart(2, '0')
 }
 
 
