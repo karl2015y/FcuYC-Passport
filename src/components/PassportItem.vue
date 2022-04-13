@@ -88,7 +88,7 @@
           <!-- Qrcode -->
           <div v-if="type == 'default'">
             <div id="qrcode" class="flex justify-center">
-              <img src="/qrcode-loading.jpg" class="w-full" />
+              <img src="/qrcode-loading.jpg" class="w-[60vw] h-[60vw]" />
             </div>
           </div>
           <!-- 勳章 -->
