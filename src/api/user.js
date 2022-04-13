@@ -26,6 +26,7 @@ const stopLoadHandler = () => {
 export const getDBDataHandler = async (email, password, callback = null) => {
     if (callback) callback();
     userStatus.set('roles', await getUserRolesHandler(email))
+    console.log("取得角色", userStatus.roles);
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
         .then(() => {
@@ -91,9 +92,11 @@ export const subscribeMyRoles = (callback = null) => {
     console.log('subscribeMyRoles');
     onSnapshot(doc(db, "roles", userStatus.user.email), (doc) => {
         const data = doc.data()
-        console.log('subscribeMyRoles updated', data);
+        if (data) {
+            console.log('subscribeMyRoles updated', data);
+            if (callback) callback(data)
+        }
 
-        if (callback) callback(data)
         // if ('current' in data) {
         //     current_user_number = data['current']
         //     console.log("current_user_number", current_user_number);

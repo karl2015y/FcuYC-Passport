@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 
-const defVal = (key, val) => (localStorage.getItem(key) === null) ? val : JSON.parse(localStorage.getItem(key));
+const defVal = (key, val) => (localStorage.getItem(key) === null || localStorage.getItem(key) == 'undefined') ? val : JSON.parse(localStorage.getItem(key));
 
 
 
@@ -20,7 +20,7 @@ export const useUserStore = defineStore('userStatus', {
   },
   getters: {
     get: (state) => {
-      return (key) => (state[key] ?? null  )
+      return (key) => (state[key] ?? null)
     },
   },
   actions: {
