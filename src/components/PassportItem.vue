@@ -24,11 +24,6 @@
       shadow-[0_0_40px_#00000029]
     "
   >
-    <!-- <div class="px-4 flex items-center justify-around">
-      <div class="w-full">
-      
-      </div>
-    </div> -->
     <swiper
       slides-per-view="1"
       class="w-full"
@@ -69,7 +64,10 @@
             </div>
           </div>
           <!-- 開始設定資料，取得完整功能 -->
-          <div v-if="!allcomplete" class="mt-[10.513vw] flex justify-center">
+          <div
+            v-if="type == 'default' && !allcomplete"
+            class="mt-[10.513vw] flex justify-center"
+          >
             <button
               @click="currentPage = 2"
               class="
@@ -88,7 +86,7 @@
             </button>
           </div>
           <!-- Qrcode -->
-          <div>
+          <div v-if="type == 'default'">
             <div id="qrcode" class="flex justify-center">
               <img src="/qrcode-loading.jpg" class="w-full" />
             </div>
@@ -139,13 +137,16 @@
               </div>
             </div>
           </div>
+
+          <slot></slot>
+
           <!-- 頁面選擇 -->
           <div class="hidden">
             <pagectrl :pages="2" v-model="currentPage" />
           </div>
         </div>
       </swiper-slide>
-      <swiper-slide
+      <swiper-slide v-if="type == 'default'"
         ><!-- 資料表 -->
         <div class="w-full px-[9.744vw]">
           <div class="mt-[6.154vw] flex justify-between">
@@ -178,7 +179,7 @@
     </swiper>
     <!-- 頁面選擇 -->
     <div class="mt-[10vw] mb-[5vw]">
-      <pagectrl :pages="2" v-model="currentPage" />
+      <pagectrl v-if="type == 'default'" :pages="2" v-model="currentPage" />
     </div>
   </div>
 </template>
@@ -208,10 +209,10 @@ export default {
     Swiper,
     SwiperSlide,
   },
-  props: ["UserData", "UserDataTemplate", "roles"],
+  props: ["UserData", "UserDataTemplate", "roles", "type"],
   setup(props) {
     const router = useRouter();
-
+    const type = computed(() => props.type ?? "default");
     const UserData = computed(() => props.UserData);
     console.log(UserData.value);
     const UserDataTemplate = computed(() => props.UserDataTemplate);
@@ -238,31 +239,33 @@ export default {
 
     const currentPage = ref(1);
 
-    // 處理QRcode 產生器
-    const generateQrcode = setInterval(() => {
-      if (UserData && UserData.value && UserData.value["email"]) {
-        // 產生Qrcode
-        generateQrcodeHandler(
-          `${window.location.origin}/passport/${encodeURIComponent(
-            UserData.value["email"]
-          ).replace(/\./g, "DOT")}`,
-          "qrcode"
-        );
-        clearInterval(generateQrcode);
-      }
-    }, 10);
-    watch(
-      () => UserData.value,
-      () => {
-        // 產生Qrcode
-        generateQrcodeHandler(
-          `${window.location.origin}/passport/${encodeURIComponent(
-            UserData.value["email"]
-          ).replace(/\./g, "DOT")}`,
-          "qrcode"
-        );
-      }
-    );
+    if (type.value == "default") {
+      // 處理QRcode 產生器
+      const generateQrcode = setInterval(() => {
+        if (UserData && UserData.value && UserData.value["email"]) {
+          // 產生Qrcode
+          generateQrcodeHandler(
+            `${window.location.origin}/passport/${encodeURIComponent(
+              UserData.value["email"]
+            ).replace(/\./g, "DOT")}`,
+            "qrcode"
+          );
+          clearInterval(generateQrcode);
+        }
+      }, 10);
+      watch(
+        () => UserData.value,
+        () => {
+          // 產生Qrcode
+          generateQrcodeHandler(
+            `${window.location.origin}/passport/${encodeURIComponent(
+              UserData.value["email"]
+            ).replace(/\./g, "DOT")}`,
+            "qrcode"
+          );
+        }
+      );
+    }
 
     // 檢查資料是否填寫完畢
     const allcomplete = computed(() => {
@@ -280,6 +283,7 @@ export default {
       scan,
       currentPage,
       allcomplete,
+      type,
     };
   },
 };

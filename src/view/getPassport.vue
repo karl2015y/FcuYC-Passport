@@ -1,34 +1,69 @@
 <template>
-  查看會員資料(管理員跟自己能看)
-  <div v-if="iMAdmin">
-    <button
-      @click="toggleRoleHandler('Member')"
-      class="m-2 text-white font-bold py-2 px-4 border rounded w-36"
-      :class="
-        UserRoles.isMember ?? false
-          ? 'bg-red-400 hover:bg-red-500 border-red-500'
-          : ' bg-blue-500 hover:bg-blue-700 border-blue-700'
-      "
+  <PassportItem
+    type="get"
+    :UserData="UserData"
+    :UserDataTemplate="UserDataTemplate"
+    :roles="UserRoles"
+  >
+    <van-search
+      v-model="decoration"
+      class="mt-3"
+      left-icon
+      leftIcon="award"
+      show-action
+      placeholder="輸入勳章"
     >
-      {{ UserRoles.isMember ?? false ? "關閉" : "開通" }}會員
-    </button>
+      <template #action>
+        <div @click="addDecoration">新增</div>
+      </template>
+    </van-search>
+    <ul>
+      <template v-for="(item, index) in UserRoles['decoration']" :key="item">
+        <li class="p-2 shadow" @click="removeDecoration(index, item)">
+          刪除 {{ item }}
+        </li>
+      </template>
+    </ul>
 
-    <button
-      @click="toggleRoleHandler('Admin')"
-      class="m-2 text-white font-bold py-2 px-4 border rounded w-36"
-      :class="
-        UserRoles.isAdmin ?? false
-          ? 'bg-red-400 hover:bg-red-500 border-red-500'
-          : ' bg-blue-500 hover:bg-blue-700 border-blue-700'
-      "
-    >
-      {{ UserRoles.isAdmin ?? false ? "關閉" : "開通" }}管理員
-    </button>
-  </div>
-  <PassportItem :UserData="UserData" />
-  {{ UserData }}
-  <br />
-  {{ UserRoles }}
+    <div class="mt-[6.154vw] flex justify-between">
+      <div>
+        <div class="text-[3.077vw] leading-[4.359vw] text-[#707070]">
+          權限開通
+        </div>
+        <div
+          class="ml-[8.205vw] text-[4.103vw] leading-[6.154vw] text-[#707070]"
+        >
+          <div class="mt-2 flex gap-2 flex-wrap">
+            <div v-if="iMAdmin">
+              <button
+                @click="toggleRoleHandler('Member')"
+                class="m-2 text-white font-bold py-2 px-4 border rounded w-36"
+                :class="
+                  UserRoles.isMember ?? false
+                    ? 'bg-red-400 hover:bg-red-500 border-red-500'
+                    : ' bg-blue-500 hover:bg-blue-700 border-blue-700'
+                "
+              >
+                {{ UserRoles.isMember ?? false ? "關閉" : "開通" }}會員
+              </button>
+
+              <button
+                @click="toggleRoleHandler('Admin')"
+                class="m-2 text-white font-bold py-2 px-4 border rounded w-36"
+                :class="
+                  UserRoles.isAdmin ?? false
+                    ? 'bg-red-400 hover:bg-red-500 border-red-500'
+                    : ' bg-blue-500 hover:bg-blue-700 border-blue-700'
+                "
+              >
+                {{ UserRoles.isAdmin ?? false ? "關閉" : "開通" }}管理員
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </PassportItem>
 </template>
 <script>
 import { useRoute } from "vue-router";
@@ -39,11 +74,13 @@ import { useUserStore } from "../store/user.js";
 import { getUserDataHandler, fire, setUserRolesHandler } from "@/api/user";
 import PassportItem from "@/components/PassportItem.vue";
 
-import { Toast, Dialog } from "vant";
+import { Toast, Dialog, Search } from "vant";
 
 export default {
   components: {
     PassportItem,
+    [Search.name]: Search,
+    [Toast.name]: Toast,
   },
   setup() {
     const userStatus = useUserStore();
@@ -57,7 +94,7 @@ export default {
     /**
      * 取得查看者的權限
      */
-    const iMAdmin = computed(() => userStatus.get('roles')["isAdmin"] ?? false);
+    const iMAdmin = computed(() => userStatus.get("roles")["isAdmin"] ?? false);
 
     /**
      * 取得使用這資料
@@ -69,6 +106,7 @@ export default {
       UserData.value = result["UserData"];
       UserRoles.value = result["UserRoles"];
     };
+    const UserDataTemplate = computed(() => userStatus.get("UserDataTemplate"));
 
     /**
      * 開通會員
@@ -96,14 +134,58 @@ export default {
         }, 1000);
       });
     };
+    /**
+     *  新增勳章
+     */
+    const decoration = ref("");
+    const addDecoration = async () => {
+      console.log(decoration.value);
+      if (UserRoles.value["decoration"]) {
+        UserRoles.value["decoration"].push(decoration.value);
+      } else {
+        UserRoles.value["decoration"] = [decoration.value];
+      }
+      UserRoles.value = await setUserRolesHandler(
+        UserData.value.email,
+        UserRoles.value
+      );
+      decoration.value = "";
+      setTimeout(() => {
+        Toast.success({
+          message: "更新成功",
+          duration: 2000,
+        });
+      }, 1000);
+    };
+    const removeDecoration = async (index, name) => {
+      if (!confirm(`是否刪除${name}`)) {
+        return;
+      }
+      UserRoles.value["decoration"].splice(index, 1);
+      UserRoles.value = await setUserRolesHandler(
+        UserData.value.email,
+        UserRoles.value
+      );
+      decoration.value = "";
+      setTimeout(() => {
+        Toast.success({
+          message: "更新成功",
+          duration: 2000,
+        });
+      }, 1000);
+    };
 
-      getUserData(findEmail.value);
-  
+    getUserData(findEmail.value);
+
     return {
       UserData,
       UserRoles,
       iMAdmin,
       toggleRoleHandler,
+      UserDataTemplate,
+      decoration,
+      addDecoration,
+      removeDecoration,
     };
   },
 };
