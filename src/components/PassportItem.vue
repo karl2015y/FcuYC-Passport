@@ -22,7 +22,6 @@
       mx-[7.692vw]
       rounded-[33px] rounded-t-none
       shadow-[0_0_40px_#00000029]
-      pb-10
     "
   >
     <!-- <div class="px-4 flex items-center justify-around">
@@ -178,7 +177,7 @@
       </swiper-slide>
     </swiper>
     <!-- 頁面選擇 -->
-    <div class="mt-[14.615vw] mb-[3.846vw]">
+    <div class="mt-[10vw] mb-[5vw]">
       <pagectrl :pages="2" v-model="currentPage" />
     </div>
   </div>

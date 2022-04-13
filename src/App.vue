@@ -7,7 +7,7 @@
   >
     <Loading v-show="loadingStatus" />
   </transition>
-  <div class="bg-[#F0F0F0] flex flex-col  min-h-screen">
+  <div class="bg-[#F0F0F0] flex flex-col h-screen overflow-hidden">
     <div class="w-screen">
       <picture class="w-[41.753vw]">
         <source
@@ -17,11 +17,13 @@
         <img src="/design/background_top/background_top.png" alt="上背景" />
       </picture>
     </div>
-    <div class="font-sans">
-      <router-view />
+    <div id="main" class="font-sans fixed h-full w-full overflow-auto">
+      <div>
+        <router-view />
+      </div>
     </div>
 
-    <div class="w-screen flex justify-end -mt-[12.23vw]">
+    <div class="w-screen flex justify-end mt-auto">
       <img
         class="w-[33.179%]"
         src="/design/backgroung_bottom/backgroung_bottom.png"
@@ -37,30 +39,12 @@
 <script>
 import Loading from "./components/Loading.vue";
 import { useUserStore } from "./store/user";
-import { computed } from "vue";
+import { computed, ref, nextTick, onMounted } from "vue";
 export default {
   components: { Loading },
   setup() {
     const userStatus = useUserStore();
     const loadingStatus = computed(() => {
-      // console.log("isLogin", userStatus.isLogin === false, userStatus.isLogin);
-      // console.log(
-      //   "user",
-      //   userStatus.get("user") === null,
-      //   userStatus.get("user")
-      // );
-      // console.log(
-      //   "roles",
-      //   userStatus.get("roles") === null,
-      //   userStatus.get("roles")
-      // );
-      // console.log(
-      //   "UserData",
-      //   userStatus.get("UserData") === null,
-      //   userStatus.get("UserData")
-      // );
-      // console.log("loading", userStatus.loading.length);
-
       return (
         userStatus.isLogin === false ||
         userStatus.get("user") === null ||
@@ -70,10 +54,39 @@ export default {
       );
     });
 
+    const mainPadding = ref(`50px`);
+    onMounted(() => {
+      nextTick(() => {
+        const main = document.querySelector("#main");
+        const windowH = window.outerHeight;
+        const x = setInterval(() => {
+          const passportH = main.children[0].clientHeight;
+          console.log("fix gogo", passportH);
+          if (passportH > 100) {
+            mainPadding.value = `${
+              passportH < windowH ? (windowH - passportH) / 2 : 50
+            }px`;
+            console.log("fix done");
+
+            clearInterval(x);
+          }
+        }, 100);
+        // console.log(main, windowH, main.children[0], passportH);
+      });
+    });
+
     return {
       Loading,
       loadingStatus,
+      mainPadding,
     };
   },
 };
 </script>
+
+<style scoped>
+#main {
+  padding-top: v-bind("mainPadding");
+  padding-bottom: v-bind("mainPadding");
+}
+</style>
