@@ -49,7 +49,44 @@ export const getDBDataHandler = async (email, password, callback = null) => {
 };
 
 import { db } from "@/tools/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, onSnapshot, updateDoc, increment } from "firebase/firestore";
+
+
+/**
+ * 監聽註冊人數
+ */
+let current_user_number = 0
+const counter_userRef = doc(db, "counter", "user");
+onSnapshot(counter_userRef, (doc) => {
+    const data = doc.data()
+    if ('current' in data) {
+        current_user_number = data['current']
+        console.log("current_user_number", current_user_number);
+    }
+});
+
+
+// 更新註冊人數
+const addUserCounter = () => {
+    updateDoc(counter_userRef, {
+        current: increment(1)
+    });
+}
+
+// 亂數英文字
+const getRandomLetter = (max) => {
+    var text = "";
+    var possible = "ABEFGHKMNPQRSTWXYZ";
+    for (var i = 0; i < max; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+}
+// 取得ID
+const getUserId = () => {
+    return getRandomLetter(1) + String(current_user_number).padStart(3, '0')
+}
+
+
 
 /**
  * 取得初始化模板
@@ -95,6 +132,11 @@ export const getMyDataHandler = async (org_template = null) => {
         UserData["email"] = userStatus.user.email;
         UserData["name"] = userStatus.user.name;
         UserData["picture"] = userStatus.user.picture;
+        if (!("user_id" in UserData)) {
+            UserData["user_id"] = getUserId();
+            addUserCounter();
+
+        }
 
         console.log("模板更新，建立對應欄位",);
         UserData = await updateUserDataFromTemplate(
@@ -118,6 +160,9 @@ export const getMyDataHandler = async (org_template = null) => {
         template["email"] = userStatus.user.email;
         template["name"] = userStatus.user.name;
         template["picture"] = userStatus.user.picture;
+        template["user_id"] = getUserId();
+        addUserCounter()
+
         console.log(template);
         setDoc(docRef, template);
         console.log("註冊成功");

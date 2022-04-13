@@ -78,7 +78,7 @@
         </transition>
 
         <div class="mt-[0.769vw] font-black text-white flex items-end">
-          <div class="text-[3.888vw] leading-[5.128vw]">#A001</div>
+          <div class="text-[3.888vw] leading-[5.128vw]">#{{UserData.user_id}}</div>
           <div
             v-if="!roles.isMember"
             class="

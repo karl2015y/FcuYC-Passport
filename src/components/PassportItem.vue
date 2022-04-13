@@ -27,18 +27,7 @@
   >
     <!-- <div class="px-4 flex items-center justify-around">
       <div class="w-full">
-        <div class="mt-2" v-if="roles">
-          <button @click="scan()" v-if="roles.isAdmin">
-            <span class="border border-solid p-0.5 rounded shadow mx-0.5">
-              🧙管理員</span
-            >
-          </button>
-          <span
-            class="border border-solid p-0.5 rounded shadow mx-0.5"
-            v-if="roles.isMember"
-            >🏅會員</span
-          >
-        </div>
+      
       </div>
     </div> -->
     <swiper
@@ -81,7 +70,7 @@
             </div>
           </div>
           <!-- 開始設定資料，取得完整功能 -->
-          <div class="mt-[10.513vw] flex justify-center">
+          <div v-if="!allcomplete" class="mt-[10.513vw] flex justify-center">
             <button
               @click="currentPage = 2"
               class="
@@ -100,9 +89,55 @@
             </button>
           </div>
           <!-- Qrcode -->
-          <div class="mt-[4vw]">
+          <div>
             <div id="qrcode" class="flex justify-center">
-              <img src="/qrcode-loading.jpg" class="w-[38vw] h-[38vw]" />
+              <img src="/qrcode-loading.jpg" class="w-full" />
+            </div>
+          </div>
+          <!-- 勳章 -->
+          <div
+            v-if="
+              roles.isMember ||
+              roles.isAdmin ||
+              (roles.decoration && roles.decoration.length > 0)
+            "
+            class="mt-[6.154vw] flex justify-between"
+          >
+            <div>
+              <div class="text-[3.077vw] leading-[4.359vw] text-[#707070]">
+                逢青勳章
+              </div>
+              <div
+                class="
+                  ml-[8.205vw]
+                  text-[4.103vw]
+                  leading-[6.154vw]
+                  text-[#707070]
+                "
+              >
+                <div class="mt-2 flex gap-2 flex-wrap" v-if="roles">
+                  <button
+                    @click="scan()"
+                    v-if="roles.isAdmin"
+                    class="border border-solid p-0.5 rounded shadow mx-0.5"
+                  >
+                    <span> 🧙管理員</span>
+                  </button>
+                  <span
+                    class="border border-solid p-0.5 rounded shadow mx-0.5"
+                    v-if="roles.isMember"
+                    >🏅會員</span
+                  >
+                  <template v-if="roles.decoration">
+                    <span
+                      v-for="item in roles.decoration"
+                      :key="item"
+                      v-text="item"
+                      class="border border-solid p-0.5 rounded shadow mx-0.5"
+                    />
+                  </template>
+                </div>
+              </div>
             </div>
           </div>
           <!-- 頁面選擇 -->
@@ -129,7 +164,7 @@
               />
             </div>
           </div>
-          <div class="mx-[2.051vw]">
+          <div id="userdataTable" class="mx-[2.051vw]">
             <userdataTable
               :UserData="UserData"
               :UserDataTemplate="UserDataTemplate"
@@ -179,9 +214,9 @@ export default {
     const router = useRouter();
 
     const UserData = computed(() => props.UserData);
+    console.log(UserData.value);
     const UserDataTemplate = computed(() => props.UserDataTemplate);
 
-    const userStatus = useUserStore();
     const roles = computed(() => props.roles);
     const scan = async () => {
       try {
@@ -204,6 +239,19 @@ export default {
 
     const currentPage = ref(1);
 
+    // 處理QRcode 產生器
+    const generateQrcode = setInterval(() => {
+      if (UserData && UserData.value && UserData.value["email"]) {
+        // 產生Qrcode
+        generateQrcodeHandler(
+          `${window.location.origin}/passport/${encodeURIComponent(
+            UserData.value["email"]
+          ).replace(/\./g, "DOT")}`,
+          "qrcode"
+        );
+        clearInterval(generateQrcode);
+      }
+    }, 10);
     watch(
       () => UserData.value,
       () => {
@@ -214,11 +262,13 @@ export default {
           ).replace(/\./g, "DOT")}`,
           "qrcode"
         );
-        // initQrcodeHandler().then(() => {
-
-        // });
       }
     );
+
+    // 檢查資料是否填寫完畢
+    const allcomplete = computed(() => {
+      return Object.values(UserData.value).indexOf("") == -1;
+    });
 
     onBeforeMount(() => {
       initQrcodeHandler();
@@ -230,6 +280,7 @@ export default {
       roles,
       scan,
       currentPage,
+      allcomplete,
     };
   },
 };

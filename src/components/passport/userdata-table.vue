@@ -17,7 +17,7 @@
       </h2>
 
       <div class="">
-        {{ UserData[key] ?? false ? UserData[key] : "無" }}
+        {{ UserData[key] ?? false ? UserData[key] : "無資料" }}
       </div>
     </div>
   </template>
