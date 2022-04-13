@@ -8,15 +8,17 @@
     :UserDataTemplate="UserDataTemplate"
     :roles="roles"
   />
-
-
 </template>
 <script>
 import { useUserStore } from "../store/user.js";
 
 import { ref, onBeforeMount, computed } from "vue";
 
-import { getUserDataTemplateHandler, getMyDataHandler } from "@/api/user";
+import {
+  getUserDataTemplateHandler,
+  getMyDataHandler,
+  subscribeMyRoles,
+} from "@/api/user";
 
 import PassportItem from "@/components/PassportItem.vue";
 import UpdatePassport from "@/components/UpdatePassport.vue";
@@ -37,15 +39,16 @@ export default {
       userStatus.set("UserData", await getMyDataHandler(template));
     };
     const roles = computed(() => userStatus.get("roles"));
-
-
+    subscribeMyRoles((data) => {
+      userStatus.set("roles", data);
+    });
 
     getUserData();
     return {
       userStatus,
       UserData,
       UserDataTemplate,
-      roles
+      roles,
     };
   },
 };

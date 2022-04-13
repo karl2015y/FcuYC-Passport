@@ -74,7 +74,7 @@ const addUserCounter = () => {
 }
 
 // 亂數英文字
-const getRandomLetter = (max, possible= "ABEFGHKMNPQRSTWXYZ") => {
+const getRandomLetter = (max, possible = "ABEFGHKMNPQRSTWXYZ") => {
     var text = "";
     for (var i = 0; i < max; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -83,9 +83,23 @@ const getRandomLetter = (max, possible= "ABEFGHKMNPQRSTWXYZ") => {
 
 // 取得ID
 const getUserId = () => {
-    return getRandomLetter(1) +getRandomLetter(1,"0123456789")+ String(current_user_number).padStart(2, '0')
+    return getRandomLetter(1) + getRandomLetter(1, "0123456789") + String(current_user_number).padStart(2, '0')
 }
 
+// 監聽角色變化
+export const subscribeMyRoles = (callback = null) => {
+    console.log('subscribeMyRoles');
+    onSnapshot(doc(db, "roles", userStatus.user.email), (doc) => {
+        const data = doc.data()
+        console.log('subscribeMyRoles updated', data);
+
+        if (callback) callback(data)
+        // if ('current' in data) {
+        //     current_user_number = data['current']
+        //     console.log("current_user_number", current_user_number);
+        // }
+    });
+}
 
 
 /**
