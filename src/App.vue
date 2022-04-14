@@ -17,7 +17,7 @@
         <img src="/design/background_top/background_top.png" alt="上背景" />
       </picture>
     </div>
-    <div id="main" class="font-sans fixed h-full w-full overflow-auto">
+    <div id="main" class=" z-10 font-sans fixed h-full w-full overflow-auto">
       <div>
         <router-view />
       </div>
@@ -58,15 +58,15 @@ export default {
     onMounted(() => {
       nextTick(() => {
         const main = document.querySelector("#main");
-        const windowH = window.outerHeight;
+        const windowH = window.innerHeight;
         const x = setInterval(() => {
           const passportH = main.children[0].clientHeight;
-          console.log("fix gogo", passportH);
+          console.log("fix gogo", windowH, passportH);
           if (passportH > 100) {
             mainPadding.value = `${
-              passportH < windowH ? (windowH - passportH) / 2 : 50
+              passportH+50 < windowH ? (windowH - passportH) / 2 : 50
             }px`;
-            console.log("fix done");
+            console.log("fix done", windowH, passportH, mainPadding);
 
             clearInterval(x);
           }
