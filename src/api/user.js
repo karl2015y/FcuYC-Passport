@@ -24,13 +24,14 @@ const stopLoadHandler = () => {
  * 到資料庫確定一下該用戶是否登記過，如果沒有就加上去
  */
 export const getDBDataHandler = async (email, password, callback = null) => {
-    if (callback) callback();
     userStatus.set('roles', await getUserRolesHandler(email))
     console.log("取得角色", userStatus.roles);
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
         .then(() => {
             console.log("確定該email已註冊");
+            if (callback) callback();
+
         })
         .catch((error) => {
             if (error.code == "auth/user-disabled") {
@@ -39,6 +40,8 @@ export const getDBDataHandler = async (email, password, callback = null) => {
                 createUserWithEmailAndPassword(auth, email, password).then(
                     () => {
                         console.log("沒註冊，但已經登記");
+                        if (callback) callback();
+
                     }
                 );
             } else {

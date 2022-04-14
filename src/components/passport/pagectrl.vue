@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-[3.333vw] justify-center">
+  <div class="flex  justify-center">
     <template v-for="page in pages" :key="page">
       <div
         @click="currentPage = page"
@@ -8,6 +8,7 @@
           h-[2.564vw]
           shadow-[0_0_1.538vw_#0000004D]
           rounded-full
+          mr-[3.333vw]
         "
         :class="page == currentPage ? 'bg-[#D7D7D7]' : 'bg-white'"
       />
