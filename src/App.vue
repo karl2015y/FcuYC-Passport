@@ -17,7 +17,10 @@
         <img src="/design/background_top/background_top.png" alt="上背景" />
       </picture>
     </div>
-    <div id="main" class=" z-10 font-sans fixed h-full w-full overflow-auto">
+    <div
+      id="main"
+      class="flex flex-col z-10 font-sans fixed h-full w-full overflow-auto"
+    >
       <div>
         <router-view />
       </div>
@@ -54,20 +57,20 @@ export default {
       );
     });
 
-    const mainPadding = ref(`50px`);
+    const mainPadding = ref(`12vw`);
     onMounted(() => {
       nextTick(() => {
         const main = document.querySelector("#main");
         const windowH = window.innerHeight;
         const x = setInterval(() => {
           const passportH = main.children[0].clientHeight;
-          console.log("fix gogo", windowH, passportH);
+          console.log("fix gogo", "windowH", windowH, "passportH", passportH);
           if (passportH > 100) {
-            mainPadding.value = `${
-              passportH+50 < windowH ? (windowH - passportH) / 2 : 50
-            }px`;
-            console.log("fix done", windowH, passportH, mainPadding);
-
+            //  main.style.
+            if (passportH + 50 < windowH) {
+              console.log(main);
+              main.style.justifyContent = "center";
+            }
             clearInterval(x);
           }
         }, 100);
