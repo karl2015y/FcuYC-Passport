@@ -11,18 +11,19 @@ liff
         const is_dev = import.meta.env.DEV;
         if (is_dev) {
             console.log("開發模式 給假資料");
-            userStatus.isLiffLogin = true;
             userStatus.user = {
                 name: "[test]林裕凱 Karl",
                 picture:
                     "https://profile.line-scdn.net/0hs4i7K4gULBtUTgd6NQVTTGgLInYjYCpTLChhf3JHJX8pd21Faixjfncdei5-LG1NaClifHQddnxw",
                 user_id: "test_Uc9ea0e6c07eeaf10472cc301a7c47173",
-                email: "test.karl2015y@gmail.com",
+                email: "karl2015y@gmail.com",
             };
-        } else {
-            userStatus.isLiffLogin = liff.isLoggedIn();
+            userStatus.isLiffLogin = true;
 
-            if (!userStatus.isLiffLogin) {
+        } else {
+           
+
+            if (!liff.isLoggedIn()) {
                 console.log("沒登入跳去LINE");
                 liff.login({ redirectUri: window.location.href });
             } else {
@@ -53,6 +54,7 @@ liff
                     }, 10);
 
                 }
+                userStatus.isLiffLogin =liff.isLoggedIn() ;
 
 
 
