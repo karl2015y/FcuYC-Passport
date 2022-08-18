@@ -54,7 +54,9 @@ liff
                     }, 10);
 
                 }
-                userStatus.isLiffLogin =liff.isLoggedIn() ;
+               setTimeout(() => {
+                userStatus.isLiffLogin =true ;
+               },1000)
 
 
 
