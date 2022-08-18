@@ -9,6 +9,7 @@ import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
 } from "firebase/auth";
+import { useFirestore } from '@vueuse/firebase/useFirestore'
 
 
 const startloadHandler = () => {
@@ -24,8 +25,8 @@ const stopLoadHandler = () => {
  * 到資料庫確定一下該用戶是否登記過，如果沒有就加上去
  */
 export const getDBDataHandler = async (email, password, callback = null) => {
-    userStatus.set('roles', await getUserRolesHandler(email))
-    console.log("取得角色", userStatus.roles);
+    // userStatus.set('roles', await getUserRolesHandler(email))
+    // console.log("取得角色", userStatus.roles);
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
         .then(() => {
@@ -251,18 +252,19 @@ export const getUserDataHandler = async (email, needRole = true) => {
 export const getUserRolesHandler = async (email) => {
     // startloadHandler()
     const docRef = doc(db, "roles", email);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        stopLoadHandler()
-        return docSnap.data();
-    } else {
-        // doc.data() will be undefined in this case
-        console.log("找不到角色");
-        // stopLoadHandler()
-        return {
-            isMember: false,
-        };
-    }
+    console.log('roles',useFirestore(docRef).value); 
+    // const docSnap = await getDoc(docRef);
+    // if (docSnap.exists()) {
+    //     stopLoadHandler()
+    //     return docSnap.data();
+    // } else {
+    //     // doc.data() will be undefined in this case
+    //     console.log("找不到角色");
+    //     // stopLoadHandler()
+    //     return {
+    //         isMember: false,
+    //     };
+    // }
 };
 
 

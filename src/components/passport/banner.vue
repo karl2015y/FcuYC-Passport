@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="UserData"
+    v-if="UserData && roles"
     class="
       mx-[7.692vw]
       rounded-[33px] rounded-b-none
@@ -8,7 +8,7 @@
       shadow-[0_0_40px_#00000029]
       relative
     "
-    :class="roles.isMember ? 'bg-[#785BEC]' : 'bg-[#5BB4EC]'"
+    :class="(roles.isMember??false) ? 'bg-[#785BEC]' : 'bg-[#5BB4EC]'"
   >
     <!-- 頭貼 -->
     <div class="flex justify-center">

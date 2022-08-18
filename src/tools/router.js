@@ -49,7 +49,7 @@ export const router = createRouter({
 router.beforeEach((to, from, next) => {
     const UserStore = useUserStore();
     // 如果沒有登入就轉登入頁
-    if (to.name != "Login" && !UserStore.isLogin) {
+    if (to.name != "Login" && !UserStore.isLiffLogin) {
         const fromPath = window.location.href.replace(window.location.origin, "");
         console.log("先去登入頁面確定是否已經登入", fromPath);
         next({ name: 'Login', query: { to: encodeURIComponent(fromPath) } })

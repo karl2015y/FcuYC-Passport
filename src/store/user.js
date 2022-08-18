@@ -10,7 +10,7 @@ export const useUserStore = defineStore('userStatus', {
   state: () => {
     return {
       // all these properties will have their type inferred automatically
-      isLogin: false,
+      isLiffLogin: false,
       loading: [],
       user: defVal('user', null),
       roles: defVal('roles', null),

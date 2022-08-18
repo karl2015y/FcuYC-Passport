@@ -7,33 +7,8 @@
   >
     <Loading v-show="loadingStatus" />
   </transition>
-  <div class="bg-[#F0F0F0] flex flex-col h-screen overflow-hidden">
-    <div class="w-screen">
-      <picture class="w-[41.753vw]">
-        <source
-          srcset="/design/background_top/background_top@2x.png"
-          media="(min-width: 473px)"
-        />
-        <img src="/design/background_top/background_top.png" alt="上背景" />
-      </picture>
-    </div>
-    <div
-      id="main"
-      class="flex flex-col z-10 font-sans fixed h-full w-full overflow-auto"
-    >
-      <div>
-        <router-view />
-      </div>
-    </div>
+  <router-view v-if="userStatus.isLiffLogin" />
 
-    <div class="w-screen flex justify-end mt-auto">
-      <img
-        class="w-[33.179%]"
-        src="/design/backgroung_bottom/backgroung_bottom.png"
-        alt=""
-      />
-    </div>
-  </div>
 </template>
 <script >
 </script>
@@ -47,41 +22,14 @@ export default {
   components: { Loading },
   setup() {
     const userStatus = useUserStore();
-    const loadingStatus = computed(() => {
-      return (
-        userStatus.isLogin === false ||
-        userStatus.get("user") === null ||
-        userStatus.get("roles") === null ||
-        userStatus.get("UserData") === null ||
-        userStatus.loading.length > 0
-      );
-    });
+    const loadingStatus = false
 
     const mainPadding = ref(`12vw`);
-    onMounted(() => {
-      nextTick(() => {
-        const main = document.querySelector("#main");
-        const windowH = window.innerHeight;
-        const x = setInterval(() => {
-          const passportH = main.children[0].clientHeight;
-          console.log("fix gogo", "windowH", windowH, "passportH", passportH);
-          if (passportH > 100) {
-            //  main.style.
-            if (passportH + 50 < windowH) {
-              console.log(main);
-              main.style.justifyContent = "center";
-            }
-            clearInterval(x);
-          }
-        }, 100);
-        // console.log(main, windowH, main.children[0], passportH);
-      });
-    });
+
 
     return {
-      Loading,
+      userStatus,
       loadingStatus,
-      mainPadding,
     };
   },
 };

@@ -39,12 +39,12 @@
                 @click="toggleRoleHandler('Member')"
                 class="m-2 text-white font-bold py-2 px-4 border rounded w-36"
                 :class="
-                  UserRoles.isMember ?? false
+                  (UserRoles.isMember ?? false)
                     ? 'bg-red-400 hover:bg-red-500 border-red-500'
                     : ' bg-blue-500 hover:bg-blue-700 border-blue-700'
                 "
               >
-                {{ UserRoles.isMember ?? false ? "關閉" : "開通" }}會員
+                {{ (UserRoles.isMember ?? false) ? "關閉" : "開通" }}會員
               </button>
 
               <button
@@ -75,7 +75,9 @@ import { getUserDataHandler, fire, setUserRolesHandler } from "@/api/user";
 import PassportItem from "@/components/PassportItem.vue";
 
 import { Toast, Dialog, Search } from "vant";
-
+import { db } from "@/tools/firebase";
+import { useFirestore } from '@vueuse/firebase/useFirestore'
+import { doc } from "firebase/firestore";
 export default {
   components: {
     PassportItem,
@@ -99,13 +101,16 @@ export default {
     /**
      * 取得使用這資料
      */
-    const UserData = ref({ name: "", email: "" });
-    const UserRoles = ref({});
-    const getUserData = async (email) => {
-      const result = await fire(getUserDataHandler, [email]);
-      UserData.value = result["UserData"];
-      UserRoles.value = result["UserRoles"];
-    };
+    const UserData = useFirestore(doc(db, "user",findEmail.value))
+    const UserRoles = useFirestore(doc(db, "roles",findEmail.value),{
+      isAdmin:false,
+      isMember:false,
+    })
+    // const getUserData = async (email) => {
+    //   const result = await fire(getUserDataHandler, [email]);
+    //   UserData.value = result["UserData"];
+    //   UserRoles.value = result["UserRoles"];
+    // };
     const UserDataTemplate = computed(() => userStatus.get("UserDataTemplate"));
 
     /**
@@ -175,7 +180,6 @@ export default {
       }, 1000);
     };
 
-    getUserData(findEmail.value);
 
     return {
       UserData,

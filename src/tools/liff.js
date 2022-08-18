@@ -11,7 +11,7 @@ liff
         const is_dev = import.meta.env.DEV;
         if (is_dev) {
             console.log("開發模式 給假資料");
-            userStatus.isLogin = true;
+            userStatus.isLiffLogin = true;
             userStatus.user = {
                 name: "[test]林裕凱 Karl",
                 picture:
@@ -20,9 +20,9 @@ liff
                 email: "test.karl2015y@gmail.com",
             };
         } else {
-            userStatus.isLogin = liff.isLoggedIn();
+            userStatus.isLiffLogin = liff.isLoggedIn();
 
-            if (!userStatus.isLogin) {
+            if (!userStatus.isLiffLogin) {
                 console.log("沒登入跳去LINE");
                 liff.login({ redirectUri: window.location.href });
             } else {

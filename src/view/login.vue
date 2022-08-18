@@ -2,16 +2,32 @@
 <script>
 import "../tools/liff";
 import { useUserStore } from "../store/user";
-import { watch } from "vue";
+import { ref, onMounted, watch, watchEffect } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 import { getDBDataHandler } from "@/api/user";
+import { db } from "@/tools/firebase";
+import { useFirestore } from '@vueuse/firebase/useFirestore'
+import { doc } from "firebase/firestore";
 
 export default {
   setup() {
     const router = useRouter();
     const route = useRoute();
     const userStatus = useUserStore();
+
+
+
+    /**
+     * 取得角色資料 
+     */
+    console.log(userStatus.get('user').email);
+    const roles = useFirestore(doc(db, "roles", userStatus.get('user').email))
+    watchEffect(() => {
+      if (roles.value) {
+        userStatus.set('roles', roles.value)
+      }
+    })
 
     /**
      * 將query 轉obj
@@ -45,15 +61,28 @@ export default {
      * 監聽liff是否觸發登入
      */
     watch(
-      () => userStatus.isLogin,
-      (isLogin) => {
-        if (isLogin) {
-          // back2FromUrl();
-          console.log();
+      () => userStatus.isLiffLogin,
+      (isLiffLogin) => {
+        if (isLiffLogin) {
           getDBDataHandler(userStatus.user.email, "Aa3345678", back2FromUrl);
         }
       }
     );
+
+    onMounted(() => {
+      if (userStatus.isLiffLogin) {
+        getDBDataHandler(userStatus.user.email, "Aa3345678", back2FromUrl);
+      }
+    });
+
+
+    return {
+      roles,
+    }
   },
 };
+
+
+
+
 </script>
