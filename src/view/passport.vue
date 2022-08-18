@@ -3,11 +3,14 @@
   <!-- {{ UserData }}
   <br />
   {{ userStatus.roles }} -->
-  <PassportItem
+  <div class=" w-screen h-screen flex flex-col justify-center">
+    <PassportItem
     :UserData="UserData"
     :UserDataTemplate="UserDataTemplate"
     :roles="roles"
   />
+  </div>
+
 </template>
 <script>
 import { useUserStore } from "../store/user.js";

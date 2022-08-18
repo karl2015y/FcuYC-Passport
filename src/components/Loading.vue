@@ -36,10 +36,10 @@ export default {
       var typed = new Typed("#loading-text", {
         strings: [
           "載入中...",
-          "網路有點慢...",
           "再給我一點時間...",
           "真的快好了...",
           "好了好了真的好了...",
+          "網路有點慢...",
         ],
         typeSpeed:100,
         loop: true,

@@ -1,4 +1,4 @@
-<template>login</template>
+<template></template>
 <script>
 import "../tools/liff";
 import { useUserStore } from "../store/user";
