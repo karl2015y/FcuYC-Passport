@@ -186,6 +186,7 @@
 <script>
 import { computed, onBeforeMount, ref, watch } from "vue";
 import { Dialog } from "vant";
+import 'vant/es/dialog/style/index';
 import { useUserStore } from "../store/user.js";
 import { initQrcodeHandler, generateQrcodeHandler } from "@/tools/qrcode";
 import { useRouter } from "vue-router";

@@ -8,7 +8,7 @@ liff
     })
     .then(() => {
         const userStatus = useUserStore();
-        const is_dev = import.meta.env.DEV;
+        const is_dev = import.meta.env.DEV || false;
         if (is_dev) {
             console.log("開發模式 給假資料");
             userStatus.user = {
@@ -16,7 +16,7 @@ liff
                 picture:
                     "https://profile.line-scdn.net/0hs4i7K4gULBtUTgd6NQVTTGgLInYjYCpTLChhf3JHJX8pd21Faixjfncdei5-LG1NaClifHQddnxw",
                 user_id: "test_Uc9ea0e6c07eeaf10472cc301a7c47173",
-                email: "karl2015y@gmail.com",
+                email: "test.karl2015y@gmail.com",
             };
             userStatus.isLiffLogin = true;
 
@@ -54,9 +54,7 @@ liff
                     }, 10);
 
                 }
-               setTimeout(() => {
                 userStatus.isLiffLogin =true ;
-               },1000)
 
 
 

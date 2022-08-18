@@ -4,11 +4,10 @@
   <br />
   {{ userStatus.roles }} -->
   <div class="fixed top-0 left-0 z-10 w-screen h-screen flex flex-col justify-center">
-    <PassportItem
+    <PassportItem v-if="UserData && UserDataTemplate && roles"
     :UserData="UserData"
     :UserDataTemplate="UserDataTemplate"
-    :roles="roles"
-  />
+      :roles="roles" />
   </div>
 
 </template>

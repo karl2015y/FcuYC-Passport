@@ -5,7 +5,7 @@ import { useUserStore } from "../store/user";
 import { ref, onMounted, watch, watchEffect } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
-import { getDBDataHandler } from "@/api/user";
+import { getDBDataHandler, setUserRolesHandler } from "@/api/user";
 import { db } from "@/tools/firebase";
 import { useFirestore } from '@vueuse/firebase/useFirestore'
 import { doc } from "firebase/firestore";
@@ -21,12 +21,13 @@ export default {
     /**
      * 取得角色資料 
      */
-    console.log(userStatus.get('user').email);
+    console.log('roles', userStatus.get('user').email);
     const roles = useFirestore(doc(db, "roles", userStatus.get('user').email))
     watchEffect(() => {
-      if (roles.value) {
+      console.log('roles 1', roles.value)
+      if (roles.value != undefined) {
         userStatus.set('roles', roles.value)
-      }
+      } 
     })
 
     /**
@@ -53,7 +54,7 @@ export default {
         const entries = new URLSearchParams(query).entries();
         query = paramsToObject(entries);
       }
-      console.log("返回", path, query);
+      console.log("返回", path, query, userStatus.UserData);
       router.push({ path, query });
     };
 

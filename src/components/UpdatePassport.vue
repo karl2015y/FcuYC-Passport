@@ -125,6 +125,7 @@ import { updateUserDataHandler } from "@/api/user";
 import { computed, ref, watch } from "vue";
 import { useUserStore } from "../store/user.js";
 import { Toast } from "vant";
+// import 'vant/es/toast/style/index';
 import { Popup } from "vant";
 
 export default {
@@ -148,6 +149,7 @@ export default {
         Toast.success({
           message: "更新成功",
           duration: 2000,
+
         });
       }, 1000);
     };
