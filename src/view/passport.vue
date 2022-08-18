@@ -3,7 +3,7 @@
   <!-- {{ UserData }}
   <br />
   {{ userStatus.roles }} -->
-  <div class=" w-screen h-screen flex flex-col justify-center">
+  <div class="fixed top-0 left-0 z-10 w-screen h-screen flex flex-col justify-center">
     <PassportItem
     :UserData="UserData"
     :UserDataTemplate="UserDataTemplate"

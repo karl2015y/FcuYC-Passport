@@ -3,7 +3,7 @@ import App from './App.vue'
 import './index.css'
 import 'animate.css';
 import VConsole from 'vconsole';
-// const vConsole = new VConsole();
+const vConsole = new VConsole();
 
 
 
