@@ -21,13 +21,11 @@ export default {
     /**
      * 取得角色資料 
      */
-    console.log('roles', userStatus.get('user').email);
-    const roles = useFirestore(doc(db, "roles", userStatus.get('user').email))
+    const roles = useFirestore(doc(db, "roles", userStatus.get('user').email), { isMember: false })
     watchEffect(() => {
-      console.log('roles 1', roles.value)
-      if (roles.value != undefined) {
+      if (roles.value) {
         userStatus.set('roles', roles.value)
-      } 
+      }
     })
 
     /**
