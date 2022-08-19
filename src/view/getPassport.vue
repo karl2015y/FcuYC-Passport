@@ -2,7 +2,25 @@
   <div class="fixed top-0 left-0 z-10 w-screen h-screen flex flex-col justify-center">
     <PassportItem type="get" v-if="UserData && UserDataTemplate && UserRoles" :UserData="UserData"
       :UserDataTemplate="UserDataTemplate" :roles="UserRoles">
-      <template v-if="iMAdmin">
+      <template v-if="iMAdmin" #vip>
+
+        <van-search v-model="vip" class="mt-3" left-icon leftIcon="award" show-action placeholder="輸入勳章">
+          <template #action>
+            <div @click="addVip">新增</div>
+          </template>
+        </van-search>
+        <ul>
+          <template v-for="(item, index) in UserRoles['vip']" :key="item">
+            <li class="p-2 shadow" @click="removeVip(index, item)">
+              刪除「 {{ item }} 」勳章
+            </li>
+          </template>
+        </ul>
+      </template>
+
+
+      <template v-if="iMAdmin" #decoration>
+
         <van-search v-model="decoration" class="mt-3" left-icon leftIcon="award" show-action placeholder="輸入勳章">
           <template #action>
             <div @click="addDecoration">新增</div>
@@ -11,7 +29,7 @@
         <ul>
           <template v-for="(item, index) in UserRoles['decoration']" :key="item">
             <li class="p-2 shadow" @click="removeDecoration(index, item)">
-              刪除 {{ item }}
+              刪除「 {{ item }} 」勳章
             </li>
           </template>
         </ul>
@@ -173,6 +191,46 @@ export default {
       }, 1000);
     };
 
+    /**
+ *  新增職稱
+ */
+    const vip = ref("");
+    const addVip = async () => {
+      if (UserRoles.value["vip"]) {
+        UserRoles.value["vip"].push(vip.value);
+      } else {
+        UserRoles.value["vip"] = [vip.value];
+      }
+      UserRoles.value = await setUserRolesHandler(
+        UserData.value.email,
+        UserRoles.value
+      );
+      vip.value = "";
+      setTimeout(() => {
+        Toast.success({
+          message: "更新成功",
+          duration: 2000,
+        });
+      }, 1000);
+    };
+    const removeVip = async (index, name) => {
+      if (!confirm(`是否刪除${name}`)) {
+        return;
+      }
+      UserRoles.value["vip"].splice(index, 1);
+      UserRoles.value = await setUserRolesHandler(
+        UserData.value.email,
+        UserRoles.value
+      );
+      vip.value = "";
+      setTimeout(() => {
+        Toast.success({
+          message: "更新成功",
+          duration: 2000,
+        });
+      }, 1000);
+    };
+
 
     return {
       UserData,
@@ -183,6 +241,9 @@ export default {
       decoration,
       addDecoration,
       removeDecoration,
+      vip,
+      addVip,
+      removeVip,
     };
   },
 };
