@@ -6,27 +6,13 @@ import { ref, onMounted, watch, watchEffect } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 import { getDBDataHandler, setUserRolesHandler } from "@/api/user";
-import { db } from "@/tools/firebase";
-import { useFirestore } from '@vueuse/firebase/useFirestore'
-import { doc } from "firebase/firestore";
+
 
 export default {
   setup() {
     const router = useRouter();
     const route = useRoute();
     const userStatus = useUserStore();
-
-
-
-    /**
-     * 取得角色資料 
-     */
-    const roles = useFirestore(doc(db, "roles", userStatus.get('user').email), { isMember: false })
-    watchEffect(() => {
-      if (roles.value) {
-        userStatus.set('roles', roles.value)
-      }
-    })
 
     /**
      * 將query 轉obj
@@ -74,10 +60,6 @@ export default {
       }
     });
 
-
-    return {
-      roles,
-    }
   },
 };
 

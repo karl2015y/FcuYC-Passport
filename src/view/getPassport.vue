@@ -2,27 +2,30 @@
   <div class="fixed top-0 left-0 z-10 w-screen h-screen flex flex-col justify-center">
     <PassportItem type="get" v-if="UserData && UserDataTemplate && UserRoles" :UserData="UserData"
       :UserDataTemplate="UserDataTemplate" :roles="UserRoles">
-      <van-search v-model="decoration" class="mt-3" left-icon leftIcon="award" show-action placeholder="輸入勳章">
-        <template #action>
-          <div @click="addDecoration">新增</div>
-        </template>
-      </van-search>
-      <ul>
-        <template v-for="(item, index) in UserRoles['decoration']" :key="item">
-          <li class="p-2 shadow" @click="removeDecoration(index, item)">
-            刪除 {{ item }}
-          </li>
-        </template>
-      </ul>
+      <template v-if="iMAdmin">
+        <van-search v-model="decoration" class="mt-3" left-icon leftIcon="award" show-action placeholder="輸入勳章">
+          <template #action>
+            <div @click="addDecoration">新增</div>
+          </template>
+        </van-search>
+        <ul>
+          <template v-for="(item, index) in UserRoles['decoration']" :key="item">
+            <li class="p-2 shadow" @click="removeDecoration(index, item)">
+              刪除 {{ item }}
+            </li>
+          </template>
+        </ul>
+      </template>
 
-      <div class="mt-[6.154vw] flex justify-between">
+
+      <div v-if="iMAdmin" class="mt-[6.154vw] flex justify-between">
         <div>
           <div class="text-[3.077vw] leading-[4.359vw] text-[#707070]">
             權限開通
           </div>
           <div class="ml-[8.205vw] text-[4.103vw] leading-[6.154vw] text-[#707070]">
             <div class="mt-2 flex gap-2 flex-wrap">
-              <div v-if="iMAdmin">
+              <div>
                 <button @click="toggleRoleHandler('Member')"
                   class="m-2 text-white font-bold py-2 px-4 border rounded w-36" :class="
                     (UserRoles.isMember ?? false)
