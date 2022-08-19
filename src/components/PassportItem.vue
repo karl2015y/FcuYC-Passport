@@ -51,10 +51,8 @@
             </div>
           </div>
 
-          <!-- 勳章 -->
+          <!-- 職稱 -->
           <div v-if="
-            (roles.isMember ?? false) ||
-            (roles.isAdmin ?? false) ||
             (roles.vip && roles.vip.length > 0)
           " class="mt-[6.154vw] flex justify-between">
             <div>
