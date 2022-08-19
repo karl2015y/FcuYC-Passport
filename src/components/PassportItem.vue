@@ -100,8 +100,6 @@
           </div>
           <!-- 勳章 -->
           <div v-if="
-            (roles.isMember ?? false) ||
-            (roles.isAdmin ?? false) ||
             (roles.decoration && roles.decoration.length > 0)
           " class="mt-[6.154vw] flex justify-between">
             <div>
@@ -131,7 +129,7 @@
 
           <slot name="decoration"></slot>
 
-
+          <slot></slot>
           <!-- 頁面選擇 -->
           <div class="hidden">
             <pagectrl :pages="2" v-model="currentPage" />

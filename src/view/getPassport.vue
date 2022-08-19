@@ -4,7 +4,7 @@
       :UserDataTemplate="UserDataTemplate" :roles="UserRoles">
       <template v-if="iMAdmin" #vip>
 
-        <van-search v-if="UserRoles['vip'] && UserRoles['vip'].length<1" v-model="vip" class="mt-3" left-icon leftIcon="award" show-action placeholder="輸入職稱">
+        <van-search v-if="(UserRoles['vip'] && UserRoles['vip'].length<1) || !UserRoles['vip']" v-model="vip" class="mt-3" left-icon leftIcon="award" show-action placeholder="輸入職稱">
           <template #action>
             <div @click="addVip">新增</div>
           </template>

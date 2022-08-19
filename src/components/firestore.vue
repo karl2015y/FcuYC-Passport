@@ -1,5 +1,5 @@
 <template>
-    <div v-if="showFireworks" class="
+    <div v-show="showFireworks" class="
       w-screen
       h-screen
       z-[9999]
@@ -43,7 +43,7 @@ const userStatus = useUserStore();
 /**
  * 取得角色資料 
  */
-const roles = useFirestore(doc(db, "roles", userStatus.get('user').email), { isMember: false })
+const roles = useFirestore(doc(db, "roles", userStatus.get('user').email), { isMember: false, isAdmin: false, vip: null, decoration: null })
 watchEffect(() => {
     if (roles.value) {
         userStatus.set('roles', roles.value)
@@ -54,7 +54,7 @@ const showFireworks = ref(false);
 const fireworksText = ref('');
 watch(() => userStatus.roles.vip, (newVips, oldVips) => {
     console.log('newVips', newVips, 'oldVips', oldVips);
-    if ((newVips && newVips.length > 0 && !oldVips) ||(newVips && oldVips && newVips.length > oldVips.length)) {
+    if ((newVips && newVips.length > 0 && oldVips === undefined) || (newVips && oldVips && newVips.length > oldVips.length )) {
         fireworksText.value = `歡迎「${newVips[newVips.length - 1]}」蒞臨中區逢甲校友青年團`
         showFireworks.value = true
         setTimeout(() => {
@@ -70,7 +70,7 @@ watch(() => userStatus.roles.vip, (newVips, oldVips) => {
 
 watch(() => userStatus.roles.decoration, (newDecorations, oldDecorations) => {
     console.log('newDecorations', newDecorations, 'oldDecorations', oldDecorations);
-    if ((newDecorations && newDecorations.length > 0 && !oldDecorations) || (newDecorations && oldDecorations && newDecorations.length > oldDecorations.length)) {
+    if ((newDecorations && newDecorations.length > 0 && oldDecorations === undefined) || (newDecorations && oldDecorations && newDecorations.length > oldDecorations.length )) {
         fireworksText.value = `恭喜獲得「${newDecorations[newDecorations.length - 1]}」勳章`
         showFireworks.value = true
         setTimeout(() => {
