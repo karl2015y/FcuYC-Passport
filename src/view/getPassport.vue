@@ -4,7 +4,7 @@
       :UserDataTemplate="UserDataTemplate" :roles="UserRoles">
       <template v-if="iMAdmin" #vip>
 
-        <van-search v-model="vip" class="mt-3" left-icon leftIcon="award" show-action placeholder="輸入勳章">
+        <van-search v-if="UserRoles['vip'] && UserRoles['vip'].length<1" v-model="vip" class="mt-3" left-icon leftIcon="award" show-action placeholder="輸入職稱">
           <template #action>
             <div @click="addVip">新增</div>
           </template>
@@ -12,7 +12,7 @@
         <ul>
           <template v-for="(item, index) in UserRoles['vip']" :key="item">
             <li class="p-2 shadow" @click="removeVip(index, item)">
-              刪除「 {{ item }} 」勳章
+              刪除「 {{ item }} 」職稱
             </li>
           </template>
         </ul>

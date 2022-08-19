@@ -54,7 +54,7 @@ const showFireworks = ref(false);
 const fireworksText = ref('');
 watch(() => userStatus.roles.vip, (newVips, oldVips) => {
     console.log('newVips', newVips, 'oldVips', oldVips);
-    if (newVips && oldVips && newVips.length > oldVips.length) {
+    if ((newVips && newVips.length > 0 && !oldVips) ||(newVips && oldVips && newVips.length > oldVips.length)) {
         fireworksText.value = `歡迎「${newVips[newVips.length - 1]}」蒞臨中區逢甲校友青年團`
         showFireworks.value = true
         setTimeout(() => {
@@ -66,8 +66,22 @@ watch(() => userStatus.roles.vip, (newVips, oldVips) => {
         }, 10000);
 
     }
+})
 
+watch(() => userStatus.roles.decoration, (newDecorations, oldDecorations) => {
+    console.log('newDecorations', newDecorations, 'oldDecorations', oldDecorations);
+    if ((newDecorations && newDecorations.length > 0 && !oldDecorations) || (newDecorations && oldDecorations && newDecorations.length > oldDecorations.length)) {
+        fireworksText.value = `恭喜獲得「${newDecorations[newDecorations.length - 1]}」勳章`
+        showFireworks.value = true
+        setTimeout(() => {
+            showCloseBtn.value = true
+        }, 3500);
+        setTimeout(() => {
+            showFireworks.value = false
+            showCloseBtn.value = false
+        }, 10000);
 
+    }
 })
 
 const showCloseBtn = ref(false);
