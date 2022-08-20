@@ -12,7 +12,9 @@
       bg-white bg-opacity-95
     ">
         <lottie-player class="-mt-40 w-96 h-96" autoplay loop mode="normal" src="/fireworks.json"></lottie-player>
-        {{ fireworksText }}
+            <div v-html="fireworksText" class="flex flex-col justify-center items-center"></div>
+            <!-- {{ fireworksText }} -->
+        
         <div>
             <button v-show="showCloseBtn" @click="handleClose()" class="
           mt-5
@@ -54,8 +56,9 @@ const showFireworks = ref(false);
 const fireworksText = ref('');
 watch(() => userStatus.roles.vip, (newVips, oldVips) => {
     console.log('newVips', newVips, 'oldVips', oldVips);
-    if ((newVips && newVips.length > 0 && oldVips === undefined) || (newVips && oldVips && newVips.length > oldVips.length )) {
-        fireworksText.value = `歡迎「${newVips[newVips.length - 1]}」蒞臨中區逢甲校友青年團`
+    if ((newVips && newVips.length > 0 && oldVips === undefined) || (newVips && oldVips && newVips.length > oldVips.length)) {
+        fireworksText.value = `<span>歡迎「 <span style="font-weight: 700; font-size: 1.25rem;line-height: 1.75rem;">${newVips[newVips.length - 1]}</span> 」</span>
+                <span>蒞臨中區逢甲校友青年團</span>`
         showFireworks.value = true
         setTimeout(() => {
             showCloseBtn.value = true
@@ -70,7 +73,7 @@ watch(() => userStatus.roles.vip, (newVips, oldVips) => {
 
 watch(() => userStatus.roles.decoration, (newDecorations, oldDecorations) => {
     console.log('newDecorations', newDecorations, 'oldDecorations', oldDecorations);
-    if ((newDecorations && newDecorations.length > 0 && oldDecorations === undefined) || (newDecorations && oldDecorations && newDecorations.length > oldDecorations.length )) {
+    if ((newDecorations && newDecorations.length > 0 && oldDecorations === undefined) || (newDecorations && oldDecorations && newDecorations.length > oldDecorations.length)) {
         fireworksText.value = `恭喜獲得「${newDecorations[newDecorations.length - 1]}」勳章`
         showFireworks.value = true
         setTimeout(() => {
